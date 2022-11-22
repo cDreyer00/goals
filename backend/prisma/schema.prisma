@@ -25,4 +25,12 @@ model Goal{
    achievement_time DateTime
    user_id Int
    completed Boolean @default(false)
+   notification Notification @default(NONE)
+}
+
+enum Notification{
+   NONE
+   DAILY
+   WEEKLY
+   MONTHLY
 }
