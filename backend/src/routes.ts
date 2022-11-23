@@ -54,7 +54,6 @@ router.get("/users", async (req: Request, res: Response) => {
    return res.json(all_users);
 })
 
-
 // create user
 router.post("/user", async (req: Request, res: Response) => {
 
@@ -63,7 +62,6 @@ router.post("/user", async (req: Request, res: Response) => {
 
    return res.json(new_user);
 })
-
 
 // ----- GOAL -----
 
@@ -84,6 +82,7 @@ router.post("/goal", verifySession, async (req: Request, res: Response) => {
    return res.json(new_goal);
 })
 
+// get user goals
 router.get("/goals", verifySession, async (req: Request, res: Response) => {
    const user_id: number = +req.cookies.id;
    const all_goals = await goalServices.getGoals(user_id)
