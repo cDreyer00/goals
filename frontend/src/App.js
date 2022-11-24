@@ -1,25 +1,28 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import Home from "./pages/home";
 
-function App() {
-   const [users, setUsers] = useState([]);
-
-   useEffect(() => {
-      axios.get("/users")
-         .then((res) => {
-            setUsers(res.data)
-         })
-   }, [])
-
+function App() {   
    return (
       <div className="App">
-         {users.map((item)=>{
-            return(
-               <h1>{item.email}</h1>
-            )
-         })}
+         <Home/>
       </div>
    );
 }
+
+
+//how use axios
+
+// {
+//    const [users, setUsers] = useState([]);
+
+//    useEffect(() => {
+//       axios.get("/users")
+//          .then((res) => {
+//             setUsers(res.data)
+//          })
+//    }, [])
+// }
+
 
 export default App;

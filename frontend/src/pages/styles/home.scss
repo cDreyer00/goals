@@ -1,0 +1,19 @@
+.homeContainer{
+   width: 100vw;
+   height: 100vh;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   gap: 200px;
+
+   color: white;
+
+   h1{
+      font-size: 4rem;
+      margin-top: 150px;
+   }
+
+   input{
+      margin-bottom: 20px;
+   }
+}
