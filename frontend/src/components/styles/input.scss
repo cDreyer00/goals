@@ -1,13 +1,25 @@
-.inputContainer {
-   input {
-      width: 500px;
-      height: 35px;
+.input {
+   width: 500px;
+   height: 35px;
 
-      background: var(--black-medium);
-      border: 1px solid white;
-      border-radius: 10px;
+   background: var(--black-medium);
+   border: 1px solid white;
+   border-radius: 10px;
 
-      color: white;
-      padding: 0 0.5rem;
-   }
+   color: white;
+   padding: 0 0.5rem;
+}
+
+.button {
+   width: 330px;
+   height: 35px;
+
+   background: var(--black-medium);
+   border: 1px solid #14FF00;
+   border-radius: 10px;
+
+   color: white;
+   padding: 0 0.5rem;
+
+   cursor: pointer;
 }

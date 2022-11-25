@@ -3,6 +3,7 @@ import { prismaClient } from "./prismaClient";
 import { verifySession, createSession } from "./Auth/session";
 import { UserServices } from "./services/UserServices"
 import { GoalServices } from "./services/GoalServices"
+import { resourceUsage } from "process";
 
 export const router = Router();
 
@@ -19,16 +20,17 @@ router.get("/", (req: Request, res: Response) => {
 // ----- USER -----
 
 // loggin
-router.get("/login", async (req: Request, res: Response) => {
+router.post("/login", async (req: Request, res: Response) => {
 
    const { email, password } = req.body;
+
    if (!email || !password) {
-      return res.json("need fill all fields")
+      return res.status(500).json("need fill all fields")
    }
 
    const user = await userServices.authData(email, password)
    if (!user) {
-      return res.json("incorrect email or password");
+      return res.status(400).json("incorrect email or password");
    }
 
    createSession(user.id, res);
@@ -58,9 +60,16 @@ router.get("/users", async (req: Request, res: Response) => {
 router.post("/user", async (req: Request, res: Response) => {
 
    const { name, password, email } = req.body;
-   const new_user = await userServices.insertData({ name, password, email })
+   if (!name || !email || !password) {
+      return res.status(400).send("Need fill all fields");
+   }
+   try {
+      const new_user = await userServices.insertData({ name, password, email })
+      return res.json(new_user);
 
-   return res.json(new_user);
+   } catch (err) {
+      return res.status(400).json("Email already exists");
+   }
 })
 
 // ----- GOAL -----

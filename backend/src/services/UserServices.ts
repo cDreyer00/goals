@@ -32,7 +32,7 @@ export class UserServices {
    }
 
    async authData(email: string, password: string) {
-      
+
       const user = await prismaClient.user.findFirst({
          where: {
             email: email,
