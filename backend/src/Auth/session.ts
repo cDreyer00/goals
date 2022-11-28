@@ -24,9 +24,11 @@ export default class Auth {
          Auth.email = email
 
          return next();
+
       } catch (err) {
          console.log("ERROR " + err)
          Auth.email = "";
+         
          return res.redirect("/");
       }
    }

@@ -4,7 +4,7 @@ import Auth from "./Auth/session";
 import { UserServices } from "./services/UserServices"
 import { GoalServices } from "./services/GoalServices"
 import { EmailSenderService } from "./services/EmailSenderService";
-import { sign } from "jsonwebtoken";
+import { sign, verify } from "jsonwebtoken";
 
 export const router = Router();
 
@@ -55,9 +55,8 @@ router.post("/login", async (req: Request, res: Response) => {
 
 // get user info
 router.get("/user/infos", auth.verifySession, async (req: Request, res: Response) => {
+
    const email = Auth.email;
-   
-   console.log("EMAIL: " + email);
    
    const user = await prismaClient.user.findUnique({
       where: {
@@ -68,6 +67,7 @@ router.get("/user/infos", auth.verifySession, async (req: Request, res: Response
    if (!user) {
       return res.json("account not found")
    }
+
    return res.json(user);
 })
 
@@ -130,4 +130,18 @@ router.get("/goals", auth.verifySession, async (req: Request, res: Response) => 
    const all_goals = await goalServices.getGoals(user_id)
 
    return res.json(all_goals);
+})
+
+// ----- EMAIL CONFIRMATION -----
+router.get("/confirmation/:token", async (req: Request, res: Response) => {
+   const {token} = req.params;
+
+   try{
+      const v = verify(req.params.token, process.env.JWT_HASH)
+      console.log(v);
+   }catch (err){
+      return res.status(400).json("invalid token");
+   }
+   
+   return res.send("confirmation");
 })

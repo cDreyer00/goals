@@ -1,3 +1,4 @@
+import { sign } from "jsonwebtoken"
 const nodemailer = require("nodemailer")
 
 export class EmailSenderService {
@@ -5,26 +6,37 @@ export class EmailSenderService {
    async SendEmail(target: string) {
       console.log("##### SENDING EMAIL... #####");
 
-      const email = process.env.EMAIL;
-      const pass = process.env.PASS;
+      const env_email = process.env.EMAIL;
+      const env_pass = process.env.PASS;
 
       let transporter = nodemailer.createTransport({
          service: "Gmail",
          auth: {
-            user: email, // generated ethereal user
-            pass: pass, // generated ethereal password
+            user: env_email, // generated ethereal user
+            pass: env_pass // generated ethereal password
          },
       });
 
+      const token = sign(
+         {
+            email: target
+         },
+         process.env.JWT_HASH,
+         {
+            subject: target,
+            expiresIn: "120s"
+         }
+      )
+
       let info = {
-         from: email, // sender address
+         from: env_email, // sender address
          to: target, // list of receivers
          subject: "Get It Done - Email confirmation", // Subject line
          html: `
          <h3>Hello<h3/>
-         <p>Thank you for creating a account. Please confirm your email by clicking on the following link</p>
+         <p>Thank you for creating an account. Please confirm your email by clicking on the following link</p>
+         <a href=http://localhost:3333/confirm/${token}> Click here <a/>
          `
-         //<a href=http://localhost:8081/confirm/${confirmationCode}> Click here <a/>
       };
 
       await transporter.sendMail(info, (error: any, info: any) => {

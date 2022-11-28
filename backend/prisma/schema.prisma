@@ -15,6 +15,7 @@ model User{
    name String
    email String @unique
    password String
+   account_verified Boolean @default(false)
 }
 
 model Goal{
