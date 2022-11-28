@@ -1,18 +1,17 @@
 import { Router, Request, Response } from "express";
 import { prismaClient } from "./prismaClient";
-import { verifySession, createSession } from "./Auth/session";
+import Auth from "./Auth/session";
 import { UserServices } from "./services/UserServices"
 import { GoalServices } from "./services/GoalServices"
-import { resourceUsage, send } from "process";
-import { validate } from "deep-email-validator"
-
-const nodemailer = require("nodemailer")
-
+import { EmailSenderService } from "./services/EmailSenderService";
+import { sign } from "jsonwebtoken";
 
 export const router = Router();
 
 const userServices = new UserServices();
 const goalServices = new GoalServices();
+const emailSender = new EmailSenderService();
+const auth = new Auth();
 
 // ----- HOME -----
 
@@ -28,6 +27,7 @@ router.post("/login", async (req: Request, res: Response) => {
 
    const { email, password } = req.body;
 
+
    if (!email || !password) {
       return res.status(400).json("need fill all fields")
    }
@@ -37,20 +37,37 @@ router.post("/login", async (req: Request, res: Response) => {
       return res.status(400).json("incorrect email or password");
    }
 
-   createSession(user.id, res);
+   const token = sign(
+      {
+         email: user.email
+      },
+      process.env.JWT_HASH,
+      {
+         subject: user.email,
+         expiresIn: "30d"
+      }
+   )
 
-   return res.json(user);
+   res.cookie("token", token, { maxAge: 90000000 });
+   console.log(req.cookies.token)
+   return res.json(token);
 })
 
 // get user info
-router.get("/user/infos", verifySession, async (req: Request, res: Response) => {
+router.get("/user/infos", auth.verifySession, async (req: Request, res: Response) => {
+   const email = Auth.email;
+   
+   console.log("EMAIL: " + email);
+   
+   const user = await prismaClient.user.findUnique({
+      where: {
+         email: email
+      }
+   });
 
-   const id: number = +req.cookies.id;
-   const user = await userServices.getData(id);
    if (!user) {
       return res.json("account not found")
-   }   
-
+   }
    return res.json(user);
 })
 
@@ -67,9 +84,15 @@ router.post("/user", async (req: Request, res: Response) => {
    if (!name || !email || !password) {
       return res.status(400).send("Need fill all fields");
    }
-   const sendEmail = await SendMail(email);
+   const validator = await emailSender.ValidateEmail(email);
 
-   if(!sendEmail){
+   if (!validator) {
+      return res.status(400).send("Invalid email")
+   }
+
+   const sendEmail = await emailSender.SendEmail(email);
+
+   if (!sendEmail) {
       return res.status(400).send("Invalid email")
    }
 
@@ -86,7 +109,7 @@ router.post("/user", async (req: Request, res: Response) => {
 // ----- GOAL -----
 
 // create goal
-router.post("/goal", verifySession, async (req: Request, res: Response) => {
+router.post("/goal", auth.verifySession, async (req: Request, res: Response) => {
 
    const { title, description, value, achievement_time } = req.body;
    const user_id: number = +req.cookies.id
@@ -98,64 +121,13 @@ router.post("/goal", verifySession, async (req: Request, res: Response) => {
 
    const new_goal = await goalServices.insertData({ title, description, value, achievement_time: date, user_id })
 
-
    return res.json(new_goal);
 })
 
 // get user goals
-router.get("/goals", verifySession, async (req: Request, res: Response) => {
+router.get("/goals", auth.verifySession, async (req: Request, res: Response) => {
    const user_id: number = +req.cookies.id;
    const all_goals = await goalServices.getGoals(user_id)
 
    return res.json(all_goals);
 })
-
-
-// SENDMAIL
-
-async function SendMail(target: string) {
-   console.log("##### SENDING EMAIL... #####");
-
-   const validator = await ValidateEmail(target);
-
-   if(!validator){
-      return false;
-   }
-
-   const email = process.env.EMAIL;
-   const pass = process.env.PASS;
-
-   let transporter = nodemailer.createTransport({
-      service: "Gmail",
-      auth: {
-         user: email, // generated ethereal user
-         pass: pass, // generated ethereal password
-      },
-   });
-
-   let info = {
-      from: email, // sender address
-      to: target, // list of receivers
-      subject: "Hello ✔", // Subject line
-      text: "Hello world?", // plain text body
-      html: "<b>Hello world?</b>", // html body
-   };
-
-   await transporter.sendMail(info, (error: any, info: any) => {
-      if (error) {
-         console.log("error ocurred");
-         console.log(error)
-         console.log(error.message)
-         return false;
-      }
-      console.log("Message sent successfully")
-   })
-
-   return true;
-}
-
-async function ValidateEmail(target: string) {
-   const emailRegex = /^[-!#$%&'*+\/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/;
-   const isValid = emailRegex.test(target);
-   return isValid;
-}

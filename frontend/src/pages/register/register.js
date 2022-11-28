@@ -20,7 +20,7 @@ export default function Register() {
          password: password
 
       }).then((res) => {
-         toast.warning("email for confirmation sent")
+         toast.success("email for confirmation sent")
       }).catch((err) => {
          toast.error(err.response.data)
       })

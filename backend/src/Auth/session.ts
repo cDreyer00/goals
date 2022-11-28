@@ -1,19 +1,35 @@
 import { NextFunction, Request, Response } from "express";
+import { verify } from "jsonwebtoken"
+import { prismaClient } from "../prismaClient";
 
-export function verifySession(req: Request, res: Response, next: NextFunction) {
+export default class Auth {
 
-   const cookie = req.cookies.id
+   async verifySession(req: Request, res: Response, next: NextFunction) {
 
-   if (!cookie) {
-      console.log("no session found")
-      return res.status(401).redirect("/");
+      const authToken = await req.cookies.token;
+      if (!authToken) {
+         Auth.email = "";
+         return res.redirect("/");
+      }
+
+      try {
+         const email = verify(authToken, process.env.JWT_HASH).sub as string;
+
+         const user = await prismaClient.user.findFirst({
+            where: {
+               email: email
+            }
+         })
+         
+         Auth.email = email
+
+         return next();
+      } catch (err) {
+         console.log("ERROR " + err)
+         Auth.email = "";
+         return res.redirect("/");
+      }
    }
-
-   console.log("session found");
-   return next();
-}
-
-export function createSession(id: number, res: Response){
-   res.cookie("id", id, {maxAge: 900000})
-   console.log("session created");
+   
+   static email;
 }
