@@ -3,7 +3,11 @@ import { prismaClient } from "./prismaClient";
 import { verifySession, createSession } from "./Auth/session";
 import { UserServices } from "./services/UserServices"
 import { GoalServices } from "./services/GoalServices"
-import { resourceUsage } from "process";
+import { resourceUsage, send } from "process";
+import { validate } from "deep-email-validator"
+
+const nodemailer = require("nodemailer")
+
 
 export const router = Router();
 
@@ -25,7 +29,7 @@ router.post("/login", async (req: Request, res: Response) => {
    const { email, password } = req.body;
 
    if (!email || !password) {
-      return res.status(500).json("need fill all fields")
+      return res.status(400).json("need fill all fields")
    }
 
    const user = await userServices.authData(email, password)
@@ -45,7 +49,7 @@ router.get("/user/infos", verifySession, async (req: Request, res: Response) => 
    const user = await userServices.getData(id);
    if (!user) {
       return res.json("account not found")
-   }
+   }   
 
    return res.json(user);
 })
@@ -63,6 +67,12 @@ router.post("/user", async (req: Request, res: Response) => {
    if (!name || !email || !password) {
       return res.status(400).send("Need fill all fields");
    }
+   const sendEmail = await SendMail(email);
+
+   if(!sendEmail){
+      return res.status(400).send("Invalid email")
+   }
+
    try {
       const new_user = await userServices.insertData({ name, password, email })
       return res.json(new_user);
@@ -70,6 +80,7 @@ router.post("/user", async (req: Request, res: Response) => {
    } catch (err) {
       return res.status(400).json("Email already exists");
    }
+
 })
 
 // ----- GOAL -----
@@ -98,3 +109,53 @@ router.get("/goals", verifySession, async (req: Request, res: Response) => {
 
    return res.json(all_goals);
 })
+
+
+// SENDMAIL
+
+async function SendMail(target: string) {
+   console.log("##### SENDING EMAIL... #####");
+
+   const validator = await ValidateEmail(target);
+
+   if(!validator){
+      return false;
+   }
+
+   const email = process.env.EMAIL;
+   const pass = process.env.PASS;
+
+   let transporter = nodemailer.createTransport({
+      service: "Gmail",
+      auth: {
+         user: email, // generated ethereal user
+         pass: pass, // generated ethereal password
+      },
+   });
+
+   let info = {
+      from: email, // sender address
+      to: target, // list of receivers
+      subject: "Hello ✔", // Subject line
+      text: "Hello world?", // plain text body
+      html: "<b>Hello world?</b>", // html body
+   };
+
+   await transporter.sendMail(info, (error: any, info: any) => {
+      if (error) {
+         console.log("error ocurred");
+         console.log(error)
+         console.log(error.message)
+         return false;
+      }
+      console.log("Message sent successfully")
+   })
+
+   return true;
+}
+
+async function ValidateEmail(target: string) {
+   const emailRegex = /^[-!#$%&'*+\/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/;
+   const isValid = emailRegex.test(target);
+   return isValid;
+}

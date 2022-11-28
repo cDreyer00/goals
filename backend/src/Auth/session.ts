@@ -6,7 +6,7 @@ export function verifySession(req: Request, res: Response, next: NextFunction) {
 
    if (!cookie) {
       console.log("no session found")
-      return res.redirect("/");
+      return res.status(401).redirect("/");
    }
 
    console.log("session found");
