@@ -57,7 +57,7 @@ router.post("/login", async (req: Request, res: Response) => {
 router.get("/user/infos", auth.verifySession, async (req: Request, res: Response) => {
 
    const email = Auth.email;
-   
+
    const user = await prismaClient.user.findUnique({
       where: {
          email: email
@@ -84,6 +84,16 @@ router.post("/user", async (req: Request, res: Response) => {
    if (!name || !email || !password) {
       return res.status(400).send("Need fill all fields");
    }
+
+   const alreadyExists = await prismaClient.user.findUnique({
+      where: {
+         email: email
+      }
+   })
+   if (alreadyExists && alreadyExists.account_verified) {
+      return res.status(406).send("Account already exists")
+   }
+
    const validator = await emailSender.ValidateEmail(email);
 
    if (!validator) {
@@ -134,14 +144,24 @@ router.get("/goals", auth.verifySession, async (req: Request, res: Response) => 
 
 // ----- EMAIL CONFIRMATION -----
 router.get("/confirmation/:token", async (req: Request, res: Response) => {
-   const {token} = req.params;
 
-   try{
-      const v = verify(req.params.token, process.env.JWT_HASH)
-      console.log(v);
-   }catch (err){
+   const { token } = req.params;
+
+   try {
+      const { sub } = verify(token, process.env.JWT_HASH)
+
+      await prismaClient.user.update({
+         where: {
+            email: sub as string
+         },
+         data: {
+            account_verified: true
+         }
+      })
+      return res.json();
+   } catch (err) {
       return res.status(400).json("invalid token");
    }
-   
-   return res.send("confirmation");
+
+
 })

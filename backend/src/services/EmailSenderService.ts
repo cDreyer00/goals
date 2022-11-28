@@ -24,7 +24,7 @@ export class EmailSenderService {
          process.env.JWT_HASH,
          {
             subject: target,
-            expiresIn: "120s"
+            expiresIn: "1d"
          }
       )
 
