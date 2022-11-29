@@ -1,7 +1,7 @@
 import "./style.scss"
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Input, Button } from "../../components/Input"
+import { Button, Input } from "../../components/input/Input"
 import axios from "axios";
 import { toast } from "react-toastify";
 

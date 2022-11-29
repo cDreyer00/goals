@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
-import { Button, Input } from "../../components/Input"
+import { Button, Input } from "../../components/input/Input"
 import "./style.scss"
 
 import { toast } from 'react-toastify';
@@ -18,10 +18,17 @@ export default function Login() {
       axios.post("/login", {
          email: email,
          password: password,
+
       }).then(({ data }) => {
          toast.success("Welcome " + data.name)
+
       }).catch(({ response }) => {
-         toast.error(response.data)
+         if (response.status == 403) {
+            toast.warning(response.data)
+         }
+         else {
+            toast.error(response.data)
+         }
       })
 
    }

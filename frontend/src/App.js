@@ -5,6 +5,7 @@ import { Route, Link, BrowserRouter, Routes } from "react-router-dom";
 import { ToastContainer, Flip } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import Register from "./pages/register/register";
+import Goals from "./pages/goals/goals";
 
 function App() {
    return (
@@ -14,6 +15,7 @@ function App() {
             <Routes>
                <Route path="/" element={<Login />}/>
                <Route path="/register" element={<Register />}/>
+               <Route path="/goals" element={<Goals />}/>
             </Routes>
          </BrowserRouter>
       </div>

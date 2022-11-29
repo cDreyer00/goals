@@ -27,14 +27,19 @@ router.post("/login", async (req: Request, res: Response) => {
 
    const { email, password } = req.body;
 
+   console.log(req.body)
 
    if (!email || !password) {
-      return res.status(400).json("need fill all fields")
+      return res.status(400).send("need fill all fields")
    }
 
    const user = await userServices.authData(email, password)
    if (!user) {
-      return res.status(400).json("incorrect email or password");
+      return res.status(400).send("incorrect email or password");
+   }
+
+   if(!user.account_verified){
+      return res.status(403).send("account waiting for email validation")
    }
 
    const token = sign(
@@ -49,8 +54,7 @@ router.post("/login", async (req: Request, res: Response) => {
    )
 
    res.cookie("token", token, { maxAge: 90000000 });
-   console.log(req.cookies.token)
-   return res.json(token);
+   return res.json(user);
 })
 
 // get user info
@@ -90,6 +94,7 @@ router.post("/user", async (req: Request, res: Response) => {
          email: email
       }
    })
+
    if (alreadyExists && alreadyExists.account_verified) {
       return res.status(406).send("Account already exists")
    }

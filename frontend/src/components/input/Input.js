@@ -1,4 +1,4 @@
-import "./styles/input.scss"
+import "./input.scss"
 
 export function Input(props) {
    const { value, type, placeHolder, onChange } = props;

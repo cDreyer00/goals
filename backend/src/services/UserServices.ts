@@ -7,7 +7,7 @@ export interface UserRequest {
 }
 
 export class UserServices {
-   async insertData({ name, email, password }: UserRequest) {      
+   async insertData({ name, email, password }: UserRequest) {  
       const new_user = await prismaClient.user.create({
          data: {
             email: email,
