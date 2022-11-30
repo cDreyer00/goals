@@ -30,7 +30,7 @@ export class EmailSenderService {
 
       let info = {
          from: env_email, // sender address
-         to: "cristianpereiradreyer@hotmail.com, cristianbr.dreyer@gmail.com", // list of receivers
+         to: target, // list of receivers
          subject: "Get It Done - Email confirmation", // Subject line
          html: `
          <h3>Hello<h3/>

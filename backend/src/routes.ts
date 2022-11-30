@@ -27,8 +27,6 @@ router.post("/login", async (req: Request, res: Response) => {
 
    const { email, password } = req.body;
 
-   console.log(req.body)
-
    if (!email || !password) {
       return res.status(400).send("need fill all fields")
    }
@@ -71,7 +69,7 @@ router.get("/user/infos", auth.verifySession, async (req: Request, res: Response
    if (!user) {
       return res.json("account not found")
    }
-
+   
    return res.json(user);
 })
 
@@ -95,14 +93,8 @@ router.post("/user", async (req: Request, res: Response) => {
       }
    })
 
-   if (alreadyExists) {
-      if(alreadyExists.account_verified){
-         return res.status(406).send("Account already exists")
-      }
-      else{
-         console.log("NAME CHANGED")
-         alreadyExists.name = "aa";         
-      }
+   if (alreadyExists && alreadyExists.account_verified) {
+      return res.status(406).send("This email has already been used")
    }
 
    const validator = await emailSender.ValidateEmail(email);
