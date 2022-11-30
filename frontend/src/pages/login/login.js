@@ -1,15 +1,16 @@
+import "./style.scss"
 import { useEffect, useState } from "react"
 import axios from "axios"
 import { Button, Input } from "../../components/input/Input"
-import "./style.scss"
 
 import { toast } from 'react-toastify';
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate} from "react-router-dom";
 
 export default function Login() {
 
    const [email, setEmail] = useState("")
    const [password, setPassword] = useState("")
+   const navigate = useNavigate();
 
    function onSubmit(e) {
       e.preventDefault()
@@ -21,7 +22,8 @@ export default function Login() {
 
       }).then(({ data }) => {
          toast.success("Welcome " + data.name)
-
+         navigate("/goals");
+            
       }).catch(({ response }) => {
          if (response.status == 403) {
             toast.warning(response.data)

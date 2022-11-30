@@ -35,7 +35,7 @@ export class EmailSenderService {
          html: `
          <h3>Hello<h3/>
          <p>Thank you for creating an account. Please confirm your email by clicking on the following link</p>
-         <a href=http://localhost:3333/confirmation/${token}> Click here <a/>
+         <a href=http://localhost:3000/confirmation/${token}> Click here <a/>
          `
       };
 

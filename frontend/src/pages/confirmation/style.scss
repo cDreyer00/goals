@@ -1,0 +1,17 @@
+.confirmationContainer {
+   width: 100vw;
+   height: 100vh;
+
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   gap: 3rem;
+
+   color: white;
+
+   a {
+      font-size: 1.5rem;
+      text-decoration: none;
+   }
+}
