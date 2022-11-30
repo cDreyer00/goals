@@ -6,6 +6,7 @@ import { ToastContainer, Flip } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import Register from "./pages/register/register";
 import Goals from "./pages/goals/goals";
+import Confirmation from "./pages/confirmation/confirmation";
 
 function App() {
    return (
@@ -16,6 +17,8 @@ function App() {
                <Route path="/" element={<Login />}/>
                <Route path="/register" element={<Register />}/>
                <Route path="/goals" element={<Goals />}/>
+
+               <Route path="/confirmation/:token" element={<Confirmation />}/>
             </Routes>
          </BrowserRouter>
       </div>

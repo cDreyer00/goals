@@ -95,8 +95,14 @@ router.post("/user", async (req: Request, res: Response) => {
       }
    })
 
-   if (alreadyExists && alreadyExists.account_verified) {
-      return res.status(406).send("Account already exists")
+   if (alreadyExists) {
+      if(alreadyExists.account_verified){
+         return res.status(406).send("Account already exists")
+      }
+      else{
+         console.log("NAME CHANGED")
+         alreadyExists.name = "aa";         
+      }
    }
 
    const validator = await emailSender.ValidateEmail(email);
@@ -112,7 +118,7 @@ router.post("/user", async (req: Request, res: Response) => {
    }
 
    try {
-      const new_user = await userServices.insertData({ name, password, email })
+      const new_user = await userServices.insertOrUpdateData({ name, password, email })
       return res.json(new_user);
 
    } catch (err) {
@@ -151,7 +157,7 @@ router.get("/goals", auth.verifySession, async (req: Request, res: Response) => 
 router.get("/confirmation/:token", async (req: Request, res: Response) => {
 
    const { token } = req.params;
-
+   console.log(token);
    try {
       const { sub } = verify(token, process.env.JWT_HASH)
 
@@ -164,9 +170,8 @@ router.get("/confirmation/:token", async (req: Request, res: Response) => {
          }
       })
       return res.json();
+
    } catch (err) {
       return res.status(400).json("invalid token");
    }
-
-
 })

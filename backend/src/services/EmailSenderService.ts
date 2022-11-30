@@ -10,10 +10,10 @@ export class EmailSenderService {
       const env_pass = process.env.PASS;
 
       let transporter = nodemailer.createTransport({
-         service: "Gmail",
+         service: "gmail",
          auth: {
-            user: env_email, // generated ethereal user
-            pass: env_pass // generated ethereal password
+            user: env_email,
+            pass: env_pass
          },
       });
 
@@ -30,12 +30,12 @@ export class EmailSenderService {
 
       let info = {
          from: env_email, // sender address
-         to: target, // list of receivers
+         to: "cristianpereiradreyer@hotmail.com, cristianbr.dreyer@gmail.com", // list of receivers
          subject: "Get It Done - Email confirmation", // Subject line
          html: `
          <h3>Hello<h3/>
          <p>Thank you for creating an account. Please confirm your email by clicking on the following link</p>
-         <a href=http://localhost:3333/confirm/${token}> Click here <a/>
+         <a href=http://localhost:3333/confirmation/${token}> Click here <a/>
          `
       };
 

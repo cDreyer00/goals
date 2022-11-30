@@ -7,7 +7,28 @@ export interface UserRequest {
 }
 
 export class UserServices {
-   async insertData({ name, email, password }: UserRequest) {  
+   async insertOrUpdateData({ name, email, password }: UserRequest) {
+      const alreadyExists = await prismaClient.user.findUnique({
+         where: {
+            email: email
+         }
+      })
+
+      if (alreadyExists) {
+         const new_user = await prismaClient.user.update({
+            where: {
+               email: email
+            },
+            data: {
+               email: email,
+               name: name,
+               password: password
+            }
+         })
+
+         return new_user;
+      }
+
       const new_user = await prismaClient.user.create({
          data: {
             email: email,
