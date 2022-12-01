@@ -8,7 +8,7 @@ export default class Auth {
 
       const authToken = await req.cookies.token;
       if (!authToken) {
-         Auth.email = "";
+         Auth.user = "";
          return res.redirect("/");
       }
 
@@ -21,17 +21,17 @@ export default class Auth {
             }
          })
          
-         Auth.email = email
+         Auth.user = user
 
          return next();
 
       } catch (err) {
          console.log("ERROR " + err)
-         Auth.email = "";
+         Auth.user = null;
          
          return res.redirect("/");
       }
    }
    
-   static email;
+   static user;
 }

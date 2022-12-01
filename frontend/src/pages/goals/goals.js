@@ -4,10 +4,12 @@ import { useEffect, useState } from "react"
 import { Navigate, useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
 import axios from "axios"
+import { setSelectionRange } from "@testing-library/user-event/dist/utils"
 
 export default function Goals() {
 
    const [user, setUser] = useState({});
+   const [goals, setGoals] = useState([]);
 
    const navigate = useNavigate();
 
@@ -24,11 +26,19 @@ export default function Goals() {
          return;
       }
 
+      // get user
       axios.get("/user/infos").then((res) => {
          setUser(res.data);
       }).catch((err) => {
          toast.error("An error has ocurred when trying catch informations, try again")
          navigate("/");
+      })
+
+      // get user goals
+      axios.get("/user/goals").then((res) => {
+         setGoals(res.data)
+      }).catch((err) => {
+         console.log(err)
       })
 
    }, [])

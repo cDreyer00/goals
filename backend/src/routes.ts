@@ -58,7 +58,7 @@ router.post("/login", async (req: Request, res: Response) => {
 // get user info
 router.get("/user/infos", auth.verifySession, async (req: Request, res: Response) => {
 
-   const email = Auth.email;
+   const email = Auth.user.email;
 
    const user = await prismaClient.user.findUnique({
       where: {
@@ -125,7 +125,7 @@ router.post("/user", async (req: Request, res: Response) => {
 router.post("/goal", auth.verifySession, async (req: Request, res: Response) => {
 
    const { title, description, value, achievement_time } = req.body;
-   const user_id: number = +req.cookies.id
+   const user_id = Auth.user.id;
 
    if (user_id === undefined || title == "" || description == "") return res.json("fill al main fields")
 
@@ -138,8 +138,8 @@ router.post("/goal", auth.verifySession, async (req: Request, res: Response) => 
 })
 
 // get user goals
-router.get("/goals", auth.verifySession, async (req: Request, res: Response) => {
-   const user_id: number = +req.cookies.id;
+router.get("/user/goals", auth.verifySession, async (req: Request, res: Response) => {
+   const user_id = Auth.user.id;
    const all_goals = await goalServices.getGoals(user_id)
 
    return res.json(all_goals);

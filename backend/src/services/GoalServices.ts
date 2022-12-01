@@ -1,3 +1,4 @@
+import { json } from "stream/consumers";
 import { prismaClient } from "../prismaClient"
 
 interface GoalRequest {
@@ -26,13 +27,20 @@ export class GoalServices {
       return new_goal;
    }
 
-   async getGoals(user_id: number){
-      const goals = await prismaClient.goal.findMany({
-         where:{
-            user_id: user_id
-         }
-      })
-
-      return goals;
+   async getGoals(user_id: number) {
+      console.log("getgoals");
+      console.log(user_id);
+      try {
+         const goals = await prismaClient.goal.findMany({
+            where: {
+               user_id: user_id
+            }
+         })
+         return goals;
+      }
+      catch (err) {
+         console.log(err)
+         return "No goals"
+      }
    }
 }
