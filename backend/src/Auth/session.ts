@@ -29,7 +29,7 @@ export default class Auth {
          console.log("ERROR " + err)
          Auth.user = null;
          
-         return res.redirect("/");
+         throw new Error("invalid token");
       }
    }
    

@@ -1,10 +1,10 @@
 import "./style.scss"
 import Cookies from "js-cookie"
 import { useEffect, useState } from "react"
-import { Navigate, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
 import axios from "axios"
-import { setSelectionRange } from "@testing-library/user-event/dist/utils"
+import { Button } from "../../components/input/Input"
 
 export default function Goals() {
 
@@ -12,10 +12,6 @@ export default function Goals() {
    const [goals, setGoals] = useState([]);
 
    const navigate = useNavigate();
-
-   async function fetchData(param) {
-      return await param();
-   }
 
    useEffect(() => {
       const token = Cookies.get("token")
@@ -43,14 +39,24 @@ export default function Goals() {
 
    }, [])
 
-   console.log(user)
-
    return (
       <div className="goalsPage">
          <div className="goalsContainer">
             <h1>Goals</h1>
+            <Button borderColor="yellow" content="Add a new goal" onClick={() => console.log("clicked")}/>
             <ul>
-               <l1>goal 1</l1>
+               {goals.map((goal) =>{
+                  return(
+                     <li key={goal.id}>
+                        
+                        {goal.title}<br/>
+                        {goal.description}<br/>
+                        {goal.value}<br/>
+                        {goal.achievement_time}
+
+                     </li>
+                  )
+               })}
             </ul>
          </div>
       </div>

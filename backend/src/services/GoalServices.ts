@@ -28,8 +28,7 @@ export class GoalServices {
    }
 
    async getGoals(user_id: number) {
-      console.log("getgoals");
-      console.log(user_id);
+
       try {
          const goals = await prismaClient.goal.findMany({
             where: {
@@ -40,7 +39,7 @@ export class GoalServices {
       }
       catch (err) {
          console.log(err)
-         return "No goals"
+         return "No goals found"
       }
    }
 }
