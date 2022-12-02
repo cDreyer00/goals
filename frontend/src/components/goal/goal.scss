@@ -46,7 +46,7 @@
    border: solid 1px white;
 }
 
-.goalCheckBackground {
+.goalCheckButton {
    width: 50px;
    height: 50px;
    background-color: white;
@@ -56,4 +56,11 @@
    border-radius: 10px;
 }
 
-.goalCheck {}
+.goalCheck {
+   height: 40px;
+   width: 40px;
+   
+   position: absolute;
+   left: 5px;
+   top: 5px;
+}

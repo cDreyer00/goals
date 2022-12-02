@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
 import axios from "axios"
 import { Button } from "../../components/input/Input"
-import Goal from "../../components/goal/goal.js"
+import Goal, { GoalStatuses } from "../../components/goal/goal.js"
 
 export default function Goals() {
 
@@ -45,6 +45,20 @@ export default function Goals() {
       return `${date[0]}/${date[1]}/${date[2]}`
    }
 
+   function checkGoalState(goal){
+      if(goal.completed){
+         return GoalStatuses.completed;
+      }
+      
+      const goalDate = new Date(goal.achievement_time);
+      const currentDate = new Date();
+      if(goalDate < currentDate){
+         return GoalStatuses.failed;
+      }
+
+      return GoalStatuses.uncompleted;
+   }
+
    return (
       <div className="goalsPage">
          <div className="goalsContainer">
@@ -59,6 +73,7 @@ export default function Goals() {
                            description={goal.description}
                            price={goal.value}
                            date={getDate(goal.achievement_time)}
+                           status={checkGoalState(goal)}
                         />
                      </li>
                   )
