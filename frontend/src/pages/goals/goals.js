@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
 import axios from "axios"
 import { Button } from "../../components/input/Input"
+import Goal from "../../components/goal/goal.js"
 
 export default function Goals() {
 
@@ -43,17 +44,12 @@ export default function Goals() {
       <div className="goalsPage">
          <div className="goalsContainer">
             <h1>Goals</h1>
-            <Button borderColor="yellow" content="Add a new goal" onClick={() => console.log("clicked")}/>
+            <Button borderColor="yellow" content="Add a new goal" handleClick={() => console.log("clicked")}/>
             <ul>
                {goals.map((goal) =>{
                   return(
                      <li key={goal.id}>
-                        
-                        {goal.title}<br/>
-                        {goal.description}<br/>
-                        {goal.value}<br/>
-                        {goal.achievement_time}
-
+                        <Goal/>
                      </li>
                   )
                })}

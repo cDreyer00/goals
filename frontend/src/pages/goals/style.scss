@@ -5,10 +5,20 @@
 }
 
 .goalsContainer {
-   position: relative;   
-   width: 600px;
+   position: relative;
+   width: 800px;
    top: 60px;
    margin: auto;
 
-   
+   background-color: black;
+   border-radius: 12px;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   gap: 50px;
+
+   ul {
+      list-style: none;
+   }
 }

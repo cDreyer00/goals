@@ -32,7 +32,7 @@ export default function Register() {
          <form onSubmit={(e) => handleSubmit(e)}>
             <Input type="text" placeHolder="name..." onChange={(e) => setName(e.target.value)} />
             <Input type="text" placeHolder="email..." onChange={(e) => setEmail(e.target.value)} />
-            <Input type="text" placeHolder="password..." onChange={(e) => setPassword(e.target.value)} />
+            <Input type="password" placeHolder="password..." onChange={(e) => setPassword(e.target.value)} />
             <Button content={"Create Account"} borderColor={"green"} />
          </form>
 

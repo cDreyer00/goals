@@ -29,7 +29,7 @@ export default class Auth {
          console.log("ERROR " + err)
          Auth.user = null;
          
-         throw new Error("invalid token");
+         return res.status(404).send("Invalid token");
       }
    }
    

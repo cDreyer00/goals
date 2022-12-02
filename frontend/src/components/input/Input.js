@@ -13,6 +13,6 @@ export function Button(props) {
    const { content, borderColor, handleClick } = props;
 
    return (
-      <button className="button" style={{ border: `1px solid ${borderColor}` }}>{content}</button>
+      <button className="button" style={{ border: `1px solid ${borderColor}` }} onClick={handleClick}>{content}</button>
    )
 }
