@@ -145,6 +145,26 @@ router.get("/user/goals", auth.verifySession, async (req: Request, res: Response
    return res.json(all_goals);
 })
 
+
+// update goal
+router.put("/goal", auth.verifySession, async (req: Request, res:Response)=>{
+    const {id, title, description, value, achievement_time, completed} = req.body;
+    const user_id = Auth.user.id;
+
+    const goalUpdated = await goalServices.updateData({user_id, title, description, value, achievement_time, completed})
+    console.log(goalUpdated);
+    return res.json(goalUpdated)
+})
+
+// check goal
+router.put("/goal/check", auth.verifySession, async (req: Request, res:Response)=>{
+    const {id, completed} = req.body;
+
+    const goalUpdated = await goalServices.checkGoal({id,completed});
+    console.log(goalUpdated);
+    return res.json(goalUpdated)
+})
+
 // ----- EMAIL CONFIRMATION -----
 router.get("/confirmation/:token", async (req: Request, res: Response) => {
 
