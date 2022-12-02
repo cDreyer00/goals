@@ -1,17 +1,17 @@
 import "./goal.scss"
 
 export default function Goal(props) {
-   const { status, title, description, date, value } = props;
-
+   const { status, title, description, date, price } = props;
+   
    return (
       <div className="goalContainer">
          <section className="goalInformations">
-            <p className="goalDate">2023/01/01</p>
+            <p className="goalDate">{date}</p>
             <section className="goalMainInfos">
-            <h1>Goal title</h1>
-            <p>Goal descriptionGoal description Goal descriptionGoal descriptionGoal description</p>
-            <p>R$ 999,99</p>
+            <h1>{title}</h1>
+            <p>{description}</p>
             </section>
+            <p className="goalPrice">R${price}</p>
          </section>
 
          <section className="goalStatusBackground">

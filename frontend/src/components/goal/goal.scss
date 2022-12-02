@@ -10,26 +10,34 @@
    height: 200px;
    border-radius: 12px;
    border: solid 1px white;
+   position: relative;
 }
 
-.goalMainInfos{
+.goalMainInfos {
    width: 350px;
-   position: relative;
+   position: absolute;
    left: 40px;
-   top: -2.5px;
+   top: 20px;
 
    display: flex;
    flex-direction: column;
    gap: 40px;
 }
 
-.goalDate{
-   position: relative;
+.goalPrice {
+   position: absolute;
+   bottom: 10px;
+   left: 40px;
+}
+
+.goalDate {
+   position: absolute;
    left: 375px;
    top: 20px;
 }
 
 .goalStatusBackground {
+   position: relative;
    height: 200px;
    width: 100px;
    background-color: var(--green);
@@ -49,5 +57,3 @@
 }
 
 .goalCheck {}
-
-.goalDate {}

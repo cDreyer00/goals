@@ -40,16 +40,29 @@ export default function Goals() {
 
    }, [])
 
+   function getDate(date) {
+      date = date.split("T")[0].split("-");
+
+      console.log(date);
+
+      return `${date[0]}/${date[1]}/${date[2]} `
+   }
+
    return (
       <div className="goalsPage">
          <div className="goalsContainer">
             <h1>Goals</h1>
-            <Button borderColor="yellow" content="Add a new goal" handleClick={() => console.log("clicked")}/>
+            <Button borderColor="yellow" content="Add a new goal" handleClick={() => console.log("clicked")} />
             <ul>
-               {goals.map((goal) =>{
-                  return(
+               {goals.map((goal) => {
+                  return (
                      <li key={goal.id}>
-                        <Goal/>
+                        <Goal
+                           title={goal.title}
+                           description={goal.description}
+                           price={goal.value}
+                           date={getDate(goal.achievement_time)}
+                        />
                      </li>
                   )
                })}
