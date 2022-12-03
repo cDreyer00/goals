@@ -42,10 +42,11 @@ export default function Goals() {
 
     function getDate(date) {
         date = date.split("T")[0].split("-");
-        return `${date[0]}/${date[1]}/${date[2]}`
+        return `${date[0]}-${date[1]}-${date[2]}`
     }
 
     function checkGoalState(goal) {
+        console.log(goal);
         if (goal.completed) {
             return GoalStatuses.completed;
         }

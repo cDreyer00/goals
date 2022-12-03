@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Register from "./pages/register/register";
 import Goals from "./pages/goals/goals";
 import Confirmation from "./pages/confirmation/confirmation";
+import { IconContext } from "react-icons";
 
 function App() {
    return (

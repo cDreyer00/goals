@@ -40,7 +40,7 @@ export class UserServices {
       return new_user;
    }
 
-   async getData(id: number) {
+   async getData(id: string) {
 
       const user = await prismaClient.user.findUnique({
          where: {

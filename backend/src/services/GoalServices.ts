@@ -1,5 +1,4 @@
 import { prisma } from "@prisma/client";
-import { json } from "stream/consumers";
 import { prismaClient } from "../prismaClient"
 
 interface GoalRequest {
@@ -63,11 +62,12 @@ export class GoalServices {
 
     async updateData({ id, title, description, value, achievement_time, completed, user_id }: GoalRequest) {
         try {
+            console.log(id)
             return await prismaClient.goal.update({
                 where: {
                     id: id
                 },
-                data: {
+                data: {                    
                     title: title,
                     description: description,
                     value: value,
@@ -76,7 +76,8 @@ export class GoalServices {
                 }
             })
         } catch (err) {
-            return err
+            console.log(err)
+            throw new Error(err)
         }
     }
 }

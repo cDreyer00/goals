@@ -1,22 +1,43 @@
 import "./goal.scss"
 import Check from "../../assets/check.svg"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
-export default function Goal(props) {
-    const { id, title, description, date, price } = props;
+import { BsCheckLg } from "react-icons/bs"
+import { AiFillEdit, AiOutlineCheck } from "react-icons/ai"
+import { GiConfirmed } from "react-icons/gi"
+import { toast } from "react-toastify";
 
+export default function Goal(props) {
+
+    const [id, setId] = useState("");
+    const [title, setTitle] = useState("");
+    const [description, setDescription] = useState("");
+    const [date, setDate] = useState("");
+    const [price, setPrice] = useState("");
     const [status, setStatus] = useState(GoalStatuses);
 
-    function handleCheckClick(newStatus) {
+    const [editMode, setEditMode] = useState(true);
 
+
+    useEffect(() => {
+        const { id, title, description, date, price, status } = props;
+        setId(id)
+        setTitle(title)
+        setDescription(description)
+        setDate(date)
+        setPrice(price)
+        setStatus(status)
+    }, [])
+
+    function handleCheckClick() {
         const completed = status != GoalStatuses.completed;
-        
+
         axios.put("/goal/check", {
             id: id,
             completed: completed
         })
-        
+
         if (status == GoalStatuses.completed) {
             setStatus(GoalStatuses.uncompleted);
 
@@ -26,24 +47,55 @@ export default function Goal(props) {
         setStatus(GoalStatuses.completed);
     }
 
+    function handleEditClick() {
+        console.log(id);
+        if (editMode == true) {
+            axios.put("/goal", {
+                id: id,
+                title: title,
+                description: description,
+                value: price,
+                achievement_time: new Date(date),
+                completed: status == GoalStatuses.completed
+
+            }).then((res) => {
+                console.log(res);
+                toast.success("Goal Edited successfuly");
+            }).catch((err) => {
+                console.log(err);
+                toast.error(err.response.data)
+            })
+        }
+
+        setEditMode(!editMode);
+    }
+
+
     return (
         <div className="goalContainer">
             <section className="goalInformations">
-                <p className="goalDate">{date}</p>
-                <section className="goalMainInfos">
-                    <h1>{title}</h1>
-                    <p>{description}</p>
-                </section>
-                <p className="goalPrice">R${price}</p>
+                <input className="goalTitle" value={title} onChange={(e) => setTitle(e.target.value)} disabled={!editMode} />
+                <textarea className="goalDescription" value={description} onChange={(e) => setDescription(e.target.value)} disabled={!editMode} />
+                <p className="goalPrice">$<input type="number" value={price} onChange={(e) => setPrice(e.target.value)} disabled={!editMode} /></p>
+                <input className="goalDate" type="date" value={date} onChange={(e) => setDate(e.target.value)} disabled={!editMode} />
+                <button></button>
             </section>
 
             <section className="goalStatusBackground">
                 <button className="goalCheckButton" onClick={handleCheckClick}>
                     {status == GoalStatuses.completed &&
-                        <img className="goalCheck" src={Check} />
+                        <BsCheckLg className='goalCheck' />
                     }
                 </button>
             </section>
+
+            <button className="goalEditButton" onClick={handleEditClick}>
+                {editMode == false &&
+                    <AiFillEdit className="goalEditIcon" />
+                }{editMode == true &&
+                    <GiConfirmed className="goalEditIcon" />
+                }
+            </button>
         </div>
     )
 

@@ -1,66 +1,108 @@
 .goalContainer {
-   display: flex;
-   flex-direction: row-reverse;
-   gap: -200px;
+    position: relative;
+    display: flex;
+    flex-direction: row-reverse;
+    gap: -200px;
 }
 
 .goalInformations {
-   background-color: var(--black-medium);
-   width: 500px;
-   height: 200px;
-   border-radius: 12px;
-   border: solid 1px white;
-   position: relative;
+    background-color: var(--black-medium);
+    width: 500px;
+    height: 200px;
+    border-radius: 12px;
+    border: solid 1px white;
+    position: relative;
 }
 
 .goalMainInfos {
-   width: 350px;
-   position: absolute;
-   left: 40px;
-   top: 20px;
+    width: 350px;
+    position: absolute;
+    left: 40px;
+    top: 20px;
 
-   display: flex;
-   flex-direction: column;
-   gap: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.goalTitle {
+    width: 300px;
+    position: absolute;
+    left: 40px;
+    top: 20px;
+    font-size: 26px;
+}
+
+.goalDescription {
+    width: 300px;
+    position: absolute;
+    left: 40px;
+    top: 80px;
+    font-size: 18px;
 }
 
 .goalPrice {
-   position: absolute;
-   bottom: 10px;
-   left: 40px;
+    position: absolute;
+    bottom: 10px;
+    left: 40px;
+
+    font-size: 20px;
+
+    input {
+        font-size: 20px;
+        overflow: hidden;
+    }
 }
 
 .goalDate {
-   position: absolute;
-   left: 375px;
-   top: 20px;
+    position: absolute;
+    width: 100px;
+    left: 375px;
+    top: 20px;
+    font-size: 14px;
 }
 
 .goalStatusBackground {
-   position: relative;
-   height: 200px;
-   width: 100px;
-   background-color: var(--green);
-   margin-right: -20px;
-   border-radius: 12px;
-   border: solid 1px white;
+    position: relative;
+    height: 200px;
+    width: 100px;
+    background-color: var(--green);
+    margin-right: -20px;
+    border-radius: 12px;
+    border: solid 1px white;
 }
 
 .goalCheckButton {
-   width: 50px;
-   height: 50px;
-   background-color: white;
-   position: relative;
-   left: 25px;
-   top: 75px;
-   border-radius: 10px;
+    width: 50px;
+    height: 50px;
+    background-color: white;
+    position: relative;
+    left: 25px;
+    top: 75px;
+    border-radius: 10px;
 }
 
 .goalCheck {
-   height: 40px;
-   width: 40px;
-   
-   position: absolute;
-   left: 5px;
-   top: 5px;
+    height: 30px;
+    width: 30px;
+
+    position: absolute;
+    left: 10px;
+    top: 10px;
+}
+
+.goalEditButton{
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    color: white;
+}
+.goalEditIcon{
+    width: 25px;
+    height:25px;
+}
+
+input,
+textarea {
+    color: white;
 }
