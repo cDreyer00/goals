@@ -22,7 +22,7 @@ model Goal{
    id String  @id @default(cuid())
    title String
    description String
-   value Int
+   value String
    achievement_time DateTime
    user_id String
    completed Boolean @default(false)

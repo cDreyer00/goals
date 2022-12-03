@@ -17,7 +17,7 @@ export default function Goal(props) {
     const [price, setPrice] = useState("");
     const [status, setStatus] = useState(GoalStatuses);
 
-    const [editMode, setEditMode] = useState(true);
+    const [editMode, setEditMode] = useState(false);
 
 
     useEffect(() => {
@@ -54,7 +54,7 @@ export default function Goal(props) {
                 id: id,
                 title: title,
                 description: description,
-                value: price,
+                value: String(price),
                 achievement_time: new Date(date),
                 completed: status == GoalStatuses.completed
 

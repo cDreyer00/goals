@@ -2,13 +2,13 @@ import { prisma } from "@prisma/client";
 import { prismaClient } from "../prismaClient"
 
 interface GoalRequest {
-    id?: number,
+    id?: string,
     title?: string,
     description?: string,
-    value?: number,
+    value?: string,
     achievement_time?: Date,
     completed?: boolean,
-    user_id?: number
+    user_id?: string
 }
 
 
@@ -49,7 +49,7 @@ export class GoalServices {
         try {
             return await prismaClient.goal.update({
                 where: {
-                    id: id
+                    id: id as string
                 },
                 data: {
                     completed: completed

@@ -161,8 +161,7 @@ router.put("/goal", auth.verifySession, async (req: Request, res: Response) => {
 
 // check goal
 router.put("/goal/check", auth.verifySession, async (req: Request, res: Response) => {
-    const { stringId, completed } = req.body;
-    let id: number = +stringId
+    const { id, completed } = req.body;
     const goalUpdated = await goalServices.checkGoal({ id, completed });
     console.log(goalUpdated);
     return res.json(goalUpdated)
