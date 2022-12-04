@@ -1,8 +1,8 @@
 import "./style.scss"
 import Cookies from "js-cookie"
 import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { toast } from "react-toastify"
+import { Link, useNavigate } from "react-router-dom"
+import { toast, ToastContainer } from "react-toastify"
 import axios from "axios"
 import { Button } from "../../components/input/Input"
 import Goal, { GoalStatuses } from "../../components/goal/goal.js"
@@ -30,14 +30,8 @@ export default function Goals() {
             toast.error("An error has ocurred when trying catch informations, try again")
             navigate("/");
         })
-
-        // get user goals
-        axios.get("/user/goals").then((res) => {
-            setGoals(res.data)
-        }).catch((err) => {
-            console.log(err)
-        })
-
+        
+        LoadGoals();
     }, [])
 
     function getDate(date) {
@@ -46,7 +40,6 @@ export default function Goals() {
     }
 
     function checkGoalState(goal) {
-        console.log(goal);
         if (goal.completed) {
             return GoalStatuses.completed;
         }
@@ -60,27 +53,63 @@ export default function Goals() {
         return GoalStatuses.uncompleted;
     }
 
+    function handleAddNewGoal() {
+        let newGoal = {
+            title: null,
+            description: null,
+            value: "value",
+            achievement_time: new Date(),
+            status: false,
+            editMode: true
+        }
+
+        axios.post("/goal", newGoal).then((res) => {
+            setGoals(res.data.all_goals)
+        }).catch((err) => {
+            toast.error("failed to create new goal, reload page and try again");
+        })
+
+    }
+
+    function LoadGoals(){
+        axios.get("/user/goals").then((res) => {
+            setGoals(res.data)
+        }).catch((err) => {
+        })
+    }
+
+    function handlerLogOut(){
+        
+    }
+
+
     return (
         <div className="goalsPage">
             <div className="goalsContainer">
                 <h1>Goals</h1>
-                <Button borderColor="yellow" content="Add a new goal" handleClick={() => console.log("clicked")} />
+                <Button borderColor="yellow" content="Add a new goal" handleClick={handleAddNewGoal} />
                 <ul>
-                    {goals.map((goal) => {
+                    {Array.from(goals.map((goal) => {
                         return (
                             <li key={goal.id}>
                                 <Goal
                                     id={goal.id}
                                     title={goal.title}
                                     description={goal.description}
-                                    price={goal.value}
+                                    value={goal.value}
                                     date={getDate(goal.achievement_time)}
                                     status={checkGoalState(goal)}
+                                    editMode={goal.title == ""}
+                                    onDeleteClick={LoadGoals}
                                 />
                             </li>
                         )
-                    })}
+                    }).reverse())}
                 </ul>
+
+                <button onClick={handlerLogOut}>
+                    <Link to={"/"}>Log out</Link>
+                </button>
             </div>
         </div>
     )

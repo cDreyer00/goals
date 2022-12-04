@@ -41,7 +41,7 @@
     font-size: 18px;
 }
 
-.goalPrice {
+.goalValue {
     position: absolute;
     bottom: 10px;
     left: 40px;
@@ -91,15 +91,34 @@
     top: 10px;
 }
 
-.goalEditButton{
+.goalEditButton {
+    position: absolute;
+    bottom: 20px;
+    right: 50px;
+    color: white;
+}
+
+.goalEditIcon {
+    width: 25px;
+    height: 25px;
+}
+
+.goalDeleteButton {
     position: absolute;
     bottom: 20px;
     right: 20px;
     color: white;
 }
-.goalEditIcon{
+
+.goalDeleteIcon {
     width: 25px;
-    height:25px;
+    height: 25px;
+}
+
+input:enabled,textarea:enabled{
+    background-color: var(--black-dark);
+    border-radius: 10px;
+    padding: 5px;
 }
 
 input,

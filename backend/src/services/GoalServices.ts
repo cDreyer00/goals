@@ -14,19 +14,41 @@ interface GoalRequest {
 
 export class GoalServices {
 
-    async insertData({ title, description, value, achievement_time, user_id }: GoalRequest) {
+    async insertGoal({ title, description, value, achievement_time, user_id }: GoalRequest) {
+        console.log(title);
+        title = title == null ? "" : title;
+        description = description == null ? "" : description;
+        value = value == null ? "" : value;
 
-        const new_goal = await prismaClient.goal.create({
-            data: {
-                title: title,
-                description: description,
-                value: value,
-                achievement_time: achievement_time,
-                user_id: user_id
-            }
-        })
+        try {
+            const new_goal = await prismaClient.goal.create({
+                data: {
+                    title: title,
+                    description: description,
+                    value: value,
+                    achievement_time: achievement_time,
+                    user_id: user_id
+                }
+            })
+            return new_goal;
+        } catch (err) {
+            console.log(err)
+            throw new Error(err)
+        }
 
-        return new_goal;
+    }
+
+    async deleteGoal({ id }: GoalRequest) {
+        try {
+            await prismaClient.goal.delete({
+                where: {
+                    id: id
+                }
+            })
+            return { deleted: true }
+        } catch (err) {
+            throw new Error(err);
+        }
     }
 
     async getGoals({ user_id }: GoalRequest) {
@@ -40,8 +62,7 @@ export class GoalServices {
             return goals;
         }
         catch (err) {
-            console.log(err)
-            return "No goals found"
+            throw new Error(err);
         }
     }
 
@@ -60,14 +81,14 @@ export class GoalServices {
         }
     }
 
-    async updateData({ id, title, description, value, achievement_time, completed, user_id }: GoalRequest) {
+    async updateGoal({ id, title, description, value, achievement_time, completed, user_id }: GoalRequest) {
         try {
             console.log(id)
             return await prismaClient.goal.update({
                 where: {
                     id: id
                 },
-                data: {                    
+                data: {
                     title: title,
                     description: description,
                     value: value,
@@ -76,7 +97,6 @@ export class GoalServices {
                 }
             })
         } catch (err) {
-            console.log(err)
             throw new Error(err)
         }
     }

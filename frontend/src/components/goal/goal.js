@@ -7,6 +7,7 @@ import { BsCheckLg } from "react-icons/bs"
 import { AiFillEdit, AiOutlineCheck } from "react-icons/ai"
 import { GiConfirmed } from "react-icons/gi"
 import { toast } from "react-toastify";
+import { MdDeleteForever } from "react-icons/md"
 
 export default function Goal(props) {
 
@@ -14,21 +15,22 @@ export default function Goal(props) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [date, setDate] = useState("");
-    const [price, setPrice] = useState("");
+    const [value, setValue] = useState("");
     const [status, setStatus] = useState(GoalStatuses);
 
-    const [editMode, setEditMode] = useState(false);
+    const [editMode, setEditMode] = useState(props.editMode);
 
 
     useEffect(() => {
-        const { id, title, description, date, price, status } = props;
+        const { id, title, description, date, value, status } = props;
         setId(id)
         setTitle(title)
         setDescription(description)
         setDate(date)
-        setPrice(price)
+        setValue(value)
         setStatus(status)
     }, [])
+
 
     function handleCheckClick() {
         const completed = status != GoalStatuses.completed;
@@ -48,21 +50,19 @@ export default function Goal(props) {
     }
 
     function handleEditClick() {
-        console.log(id);
+
         if (editMode == true) {
             axios.put("/goal", {
                 id: id,
                 title: title,
                 description: description,
-                value: String(price),
+                value: String(value),
                 achievement_time: new Date(date),
                 completed: status == GoalStatuses.completed
 
             }).then((res) => {
-                console.log(res);
                 toast.success("Goal Edited successfuly");
             }).catch((err) => {
-                console.log(err);
                 toast.error(err.response.data)
             })
         }
@@ -70,13 +70,26 @@ export default function Goal(props) {
         setEditMode(!editMode);
     }
 
+    function handleDeleteClick() {
+        axios.delete("/goal", {
+            data: {
+                id: id
+            }
+        }).then((res) => {            
+            toast.success(res.data);
+            props.onDeleteClick();
+        }).catch((err) => {
+            toast.error(err.response.data);
+        })
+    }
+
 
     return (
         <div className="goalContainer">
             <section className="goalInformations">
-                <input className="goalTitle" value={title} onChange={(e) => setTitle(e.target.value)} disabled={!editMode} />
-                <textarea className="goalDescription" value={description} onChange={(e) => setDescription(e.target.value)} disabled={!editMode} />
-                <p className="goalPrice">$<input type="number" value={price} onChange={(e) => setPrice(e.target.value)} disabled={!editMode} /></p>
+                <input className="goalTitle" placeholder="Title"  value={title} onChange={(e) => setTitle(e.target.value)} disabled={!editMode} />
+                <textarea className="goalDescription" placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} disabled={!editMode} />
+                <p className="goalValue">$<input type="number" placeholder="0" value={value} onChange={(e) => setValue(e.target.value)} disabled={!editMode} /></p>
                 <input className="goalDate" type="date" value={date} onChange={(e) => setDate(e.target.value)} disabled={!editMode} />
                 <button></button>
             </section>
@@ -95,6 +108,9 @@ export default function Goal(props) {
                 }{editMode == true &&
                     <GiConfirmed className="goalEditIcon" />
                 }
+            </button>
+            <button className="goalDeleteButton" onClick={handleDeleteClick}>
+                <MdDeleteForever className="goalDeleteIcon" />
             </button>
         </div>
     )

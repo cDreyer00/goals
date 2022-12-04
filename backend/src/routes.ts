@@ -125,16 +125,16 @@ router.post("/user", async (req: Request, res: Response) => {
 router.post("/goal", auth.verifySession, async (req: Request, res: Response) => {
 
     const { title, description, value, achievement_time } = req.body;
-    const user_id = Auth.user.id;
+    const user_id = Auth.user.id;    
 
-    if (user_id === undefined || title == "" || description == "") return res.json("fill al main fields")
+    try {
+        const new_goal = await goalServices.insertGoal({ title, description, value, achievement_time, user_id })
+        const allUserGoals = await goalServices.getGoals({user_id});
+        return res.json({new_goal: new_goal, all_goals: allUserGoals});
+    } catch (err) {
+        return res.status(400).send("New goals could not be created, try again");
+    }
 
-    const { year, month, day } = achievement_time;
-    const date = new Date(year, month, day);
-
-    const new_goal = await goalServices.insertData({ title, description, value, achievement_time: date, user_id })
-
-    return res.json(new_goal);
 })
 
 // get user goals
@@ -152,10 +152,21 @@ router.put("/goal", auth.verifySession, async (req: Request, res: Response) => {
     const user_id = Auth.user.id;
 
     try {
-        const goalUpdated = await goalServices.updateData({ id, user_id, title, description, value, achievement_time, completed })
+        const goalUpdated = await goalServices.updateGoal({ id, user_id, title, description, value, achievement_time, completed })
         return res.status(200).json(goalUpdated);
     } catch (err) {
         return res.status(400).send("goal edit failed, try again");
+    }
+})
+
+router.delete("/goal", auth.verifySession, async (req: Request, res: Response) => {
+    const { id } = req.body;
+    console.log(id);
+    try {
+        await goalServices.deleteGoal({ id })
+        return res.status(200).send("goal deleted");
+    } catch (err) {
+        return res.status(400).send("fail to delete goal, reload page and try again");
     }
 })
 
