@@ -6,6 +6,7 @@ import { toast, ToastContainer } from "react-toastify"
 import axios from "axios"
 import { Button } from "../../components/input/Input"
 import Goal, { GoalStatuses } from "../../components/goal/goal.js"
+import {GoSignOut} from "react-icons/go"
 
 export default function Goals() {
 
@@ -30,7 +31,7 @@ export default function Goals() {
             toast.error("An error has ocurred when trying catch informations, try again")
             navigate("/");
         })
-        
+
         LoadGoals();
     }, [])
 
@@ -71,15 +72,15 @@ export default function Goals() {
 
     }
 
-    function LoadGoals(){
+    function LoadGoals() {
         axios.get("/user/goals").then((res) => {
             setGoals(res.data)
         }).catch((err) => {
         })
     }
 
-    function handlerLogOut(){
-        
+    function handlerLogOut() {
+        Cookies.remove("token");
     }
 
 
@@ -87,7 +88,14 @@ export default function Goals() {
         <div className="goalsPage">
             <div className="goalsContainer">
                 <h1>Goals</h1>
-                <Button borderColor="yellow" content="Add a new goal" handleClick={handleAddNewGoal} />
+                
+                <div className="topButtons">
+                    <Button borderColor="yellow" content="Add a new goal" handleClick={handleAddNewGoal} />
+                    <button onClick={handlerLogOut} >
+                        <Link to="/"><GoSignOut className="signOutIcon"/></Link>
+                    </button>
+                </div>
+
                 <ul>
                     {Array.from(goals.map((goal) => {
                         return (
@@ -106,10 +114,6 @@ export default function Goals() {
                         )
                     }).reverse())}
                 </ul>
-
-                <button onClick={handlerLogOut}>
-                    <Link to={"/"}>Log out</Link>
-                </button>
             </div>
         </div>
     )
