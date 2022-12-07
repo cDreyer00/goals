@@ -59,6 +59,8 @@ export class GoalServices {
                     user_id: user_id
                 }
             })
+            console.log(user_id);
+            console.log(goals);
             return goals;
         }
         catch (err) {

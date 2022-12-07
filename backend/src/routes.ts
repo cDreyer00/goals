@@ -140,7 +140,7 @@ router.post("/goal", auth.verifySession, async (req: Request, res: Response) => 
 // get user goals
 router.get("/user/goals", auth.verifySession, async (req: Request, res: Response) => {
     const user_id = Auth.user.id;
-    const all_goals = await goalServices.getGoals(user_id)
+    const all_goals = await goalServices.getGoals({user_id})
 
     return res.json(all_goals);
 })
