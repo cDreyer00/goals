@@ -1,9 +1,9 @@
 import { sign } from "jsonwebtoken"
-const nodemailer = require("nodemailer")
+import nodemailer from "nodemailer"
 
 export class EmailSenderService {
 
-   async SendEmail(target: string) {
+   async SendEmail(target) {
       console.log("##### SENDING EMAIL... #####");
 
       const env_email = process.env.EMAIL;
@@ -39,7 +39,7 @@ export class EmailSenderService {
          `
       };
 
-      await transporter.sendMail(info, (error: any, info: any) => {
+      await transporter.sendMail(info, (error, info) => {
          if (error) {
             console.log("error ocurred");
             console.log(error)
@@ -52,7 +52,7 @@ export class EmailSenderService {
       return true;
    }
 
-   async ValidateEmail(target: string) {
+   async ValidateEmail(target) {
       const emailRegex = /^[-!#$%&'*+\/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/;
       const isValid = emailRegex.test(target);
       return isValid;

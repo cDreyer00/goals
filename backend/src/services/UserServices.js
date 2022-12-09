@@ -1,13 +1,7 @@
 import { prismaClient } from "../prismaClient";
 
-export interface UserRequest {
-   name: string,
-   email: string,
-   password: string
-}
-
 export class UserServices {
-   async insertOrUpdateData({ name, email, password }: UserRequest) {
+   async insertOrUpdateData({ name, email, password }) {
       const alreadyExists = await prismaClient.user.findUnique({
          where: {
             email: email
@@ -40,7 +34,7 @@ export class UserServices {
       return new_user;
    }
 
-   async getData(id: string) {
+   async getData(id) {
 
       const user = await prismaClient.user.findUnique({
          where: {
@@ -51,7 +45,7 @@ export class UserServices {
       return user;
    }
 
-   async authData(email: string, password: string) {
+   async authData(email, password) {
 
       const user = await prismaClient.user.findFirst({
          where: {

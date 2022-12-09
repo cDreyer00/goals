@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
 import { prismaClient } from "./prismaClient";
 import Auth from "./Auth/session";
 import { UserServices } from "./services/UserServices"
@@ -15,7 +15,7 @@ const auth = new Auth();
 
 // ----- HOME -----
 
-router.get("/", (req: Request, res: Response) => {
+router.get("/", (req, res) => {
     return res.json("homepage");
 })
 
@@ -23,7 +23,7 @@ router.get("/", (req: Request, res: Response) => {
 // ----- USER -----
 
 // loggin
-router.post("/login", async (req: Request, res: Response) => {
+router.post("/login", async (req, res) => {
 
     const { email, password } = req.body;
 
@@ -56,7 +56,7 @@ router.post("/login", async (req: Request, res: Response) => {
 })
 
 // get user info
-router.get("/user/infos", auth.verifySession, async (req: Request, res: Response) => {
+router.get("/user/infos", auth.verifySession, async (req, res) => {
 
     const email = Auth.user.email;
 
@@ -74,13 +74,13 @@ router.get("/user/infos", auth.verifySession, async (req: Request, res: Response
 })
 
 // get all users infos
-router.get("/users", async (req: Request, res: Response) => {
+router.get("/users", async (req, res) => {
     const all_users = await prismaClient.user.findMany();
     return res.json(all_users);
 })
 
 // create user
-router.post("/user", async (req: Request, res: Response) => {
+router.post("/user", async (req, res) => {
 
     const { name, password, email } = req.body;
     if (!name || !email || !password) {
@@ -122,7 +122,7 @@ router.post("/user", async (req: Request, res: Response) => {
 // ----- GOAL -----
 
 // create goal
-router.post("/goal", auth.verifySession, async (req: Request, res: Response) => {
+router.post("/goal", auth.verifySession, async (req, res) => {
 
     const { title, description, value, achievement_time } = req.body;
     const user_id = Auth.user.id;    
@@ -138,7 +138,7 @@ router.post("/goal", auth.verifySession, async (req: Request, res: Response) => 
 })
 
 // get user goals
-router.get("/user/goals", auth.verifySession, async (req: Request, res: Response) => {
+router.get("/user/goals", auth.verifySession, async (req, res) => {
     const user_id = Auth.user.id;
     const all_goals = await goalServices.getGoals({user_id})
 
@@ -147,7 +147,7 @@ router.get("/user/goals", auth.verifySession, async (req: Request, res: Response
 
 
 // update goal
-router.put("/goal", auth.verifySession, async (req: Request, res: Response) => {
+router.put("/goal", auth.verifySession, async (req, res) => {
     const { id, title, description, value, achievement_time, completed } = req.body;
     const user_id = Auth.user.id;
 
@@ -159,7 +159,7 @@ router.put("/goal", auth.verifySession, async (req: Request, res: Response) => {
     }
 })
 
-router.delete("/goal", auth.verifySession, async (req: Request, res: Response) => {
+router.delete("/goal", auth.verifySession, async (req, res) => {
     const { id } = req.body;
     console.log(id);
     try {
@@ -171,7 +171,7 @@ router.delete("/goal", auth.verifySession, async (req: Request, res: Response) =
 })
 
 // check goal
-router.put("/goal/check", auth.verifySession, async (req: Request, res: Response) => {
+router.put("/goal/check", auth.verifySession, async (req, res) => {
     const { id, completed } = req.body;
     const goalUpdated = await goalServices.checkGoal({ id, completed });
     console.log(goalUpdated);
@@ -179,7 +179,7 @@ router.put("/goal/check", auth.verifySession, async (req: Request, res: Response
 })
 
 // ----- EMAIL CONFIRMATION -----
-router.get("/confirmation/:token", async (req: Request, res: Response) => {
+router.get("/confirmation/:token", async (req, res) => {
 
     const { token } = req.params;
     console.log(token);
@@ -188,7 +188,7 @@ router.get("/confirmation/:token", async (req: Request, res: Response) => {
 
         await prismaClient.user.update({
             where: {
-                email: sub as string
+                email: sub
             },
             data: {
                 account_verified: true

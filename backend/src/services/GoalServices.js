@@ -1,20 +1,9 @@
 import { prisma } from "@prisma/client";
 import { prismaClient } from "../prismaClient"
 
-interface GoalRequest {
-    id?: string,
-    title?: string,
-    description?: string,
-    value?: string,
-    achievement_time?: Date,
-    completed?: boolean,
-    user_id?: string
-}
-
-
 export class GoalServices {
 
-    async insertGoal({ title, description, value, achievement_time, user_id }: GoalRequest) {
+    async insertGoal({ title, description, value, achievement_time, user_id }) {
         console.log(title);
         title = title == null ? "" : title;
         description = description == null ? "" : description;
@@ -38,7 +27,7 @@ export class GoalServices {
 
     }
 
-    async deleteGoal({ id }: GoalRequest) {
+    async deleteGoal({ id }) {
         try {
             await prismaClient.goal.delete({
                 where: {
@@ -51,7 +40,7 @@ export class GoalServices {
         }
     }
 
-    async getGoals({ user_id }: GoalRequest) {
+    async getGoals({ user_id }) {
 
         try {
             const goals = await prismaClient.goal.findMany({
@@ -68,11 +57,11 @@ export class GoalServices {
         }
     }
 
-    async checkGoal({ id, completed }: GoalRequest) {
+    async checkGoal({ id, completed }) {
         try {
             return await prismaClient.goal.update({
                 where: {
-                    id: id as string
+                    id: id
                 },
                 data: {
                     completed: completed
@@ -83,7 +72,7 @@ export class GoalServices {
         }
     }
 
-    async updateGoal({ id, title, description, value, achievement_time, completed, user_id }: GoalRequest) {
+    async updateGoal({ id, title, description, value, achievement_time, completed, user_id }) {
         try {
             console.log(id)
             return await prismaClient.goal.update({

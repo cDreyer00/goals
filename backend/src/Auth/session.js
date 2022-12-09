@@ -1,10 +1,10 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
 import { verify } from "jsonwebtoken"
 import { prismaClient } from "../prismaClient";
 
 export default class Auth {
 
-   async verifySession(req: Request, res: Response, next: NextFunction) {
+   async verifySession(req, res, next) {
 
       const authToken = await req.cookies.token;
       if (!authToken) {
@@ -13,7 +13,7 @@ export default class Auth {
       }
 
       try {
-         const email = verify(authToken, process.env.JWT_HASH).sub as string;
+         const email = verify(authToken, process.env.JWT_HASH).sub;
 
          const user = await prismaClient.user.findFirst({
             where: {
