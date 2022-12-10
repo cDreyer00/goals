@@ -1,14 +1,13 @@
 import express from "express"
-import { run } from "./database.js";
-
+import { router } from "./routes.js";
+import bodyParser from "body-parser";
+import "dotenv/config"
 
 const app = express();
 
-app.get("/", async (req, res) => {
-    const dbRun = await run();
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended: true}))
 
-    return res.json(dbRun);
-})
+app.use(router);
 
-app.listen(5000, () => console.log("SERVER RUNNING ON http://localhost:5000"))
-
+app.listen(process.env.PORT, () => console.log(`SERVER RUNNING ON http://localhost:${process.env.PORT}`))
