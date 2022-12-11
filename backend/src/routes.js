@@ -13,13 +13,6 @@ const goalServices = new GoalServices();
 const emailSender = new EmailSenderService();
 const auth = new Auth();
 
-// ----- HOME -----
-
-router.get("/", (req, res) => {
-    return res.json("homepage");
-})
-
-
 // ----- USER -----
 
 // loggin

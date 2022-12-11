@@ -1,23 +1,32 @@
-import {loginUserService, getAllUsersService, createUserService} from "../services/user_services.js"
+import { loginUserService, getAllUsersService, createUserService } from "../services/user_services.js"
+import { hash } from "../cypher.js"
+import { authUser } from "../auth.js";
 
 export async function loginUserHandler(req, res) {
-    const {email, password} = req.body;
-    
-    if(!email || !password){
+    const { email, password } = req.body;
+
+    if (!email || !password) {
         return res.status(400).send("need fill all fields");
     }
-    const users = await loginUserService({email, password});
-    users.rows.test = "aaa";
-    console.log(users.rows.test)
-    return res.json(users);
+
+    const hashedPass = hash(password);
+    const { rows } = await loginUserService({ email, hashedPass });
+    console.log(rows);
+
+    if (rows.length == 0) return res.status(400).send("Account not found")
+
+    authUser(rows[0]);
+
+    return res.json(rows);
 }
 
-export async function createUserHandler(req, res){
-    const {name, email, password} = req.body;
+export async function createUserHandler(req, res) {
+    const { name, email, password } = req.body;
 
-    if(!name || !email || !password){
-        return res.status(400).send("nedd fill all fields");
+    if (!name || !email || !password) {
+        return res.status(400).send("ned fill all fields");
     }
-
-    const result = await createUserService({name, email, password});
+    const hashedPass = hash(password);
+    const result = await createUserService({ name, email, hashedPass });
+    return res.json(result);
 }
