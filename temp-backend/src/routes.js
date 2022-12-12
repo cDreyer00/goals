@@ -2,6 +2,7 @@ import { Router } from "express";
 import { loginUserHandler, createUserHandler } from "./handlers/user_handlers.js";
 import "./auth.js"
 import { authUser, checkAuth } from "./auth.js";
+import { createGoalHandler } from "./handlers/goal_handlers.js";
 
 export const router = Router();
 
@@ -14,7 +15,7 @@ router.post("/user", createUserHandler);
 
 /* ----- GOALS ROUTES ----- */
 
-router.post("/goal", checkAuth);
+router.post("/goal", checkAuth, createGoalHandler);
 router.put("/goal");
 router.delete("/goal");
 

@@ -1,8 +1,8 @@
 import { execute, usersTable } from "../database.js"
 
-export async function loginUserService({ email, password }) {
+export async function loginUserService({ email, hashedPass }) {
     try {
-        const query = `SELECT * FROM ${usersTable} WHERE email = '${email}' AND password = '${password}'`
+        const query = `SELECT * FROM ${usersTable} WHERE email = '${email}' AND password = '${hashedPass}'`
         return await execute(query)
     } catch (err) {
         console.log(err.message);

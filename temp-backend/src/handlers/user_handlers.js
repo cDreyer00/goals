@@ -10,14 +10,13 @@ export async function loginUserHandler(req, res) {
     }
 
     const hashedPass = hash(password);
-    const { rows } = await loginUserService({ email, hashedPass });
-    console.log(rows);
+    const result  = await loginUserService({ email, hashedPass });
 
-    if (rows.length == 0) return res.status(400).send("Account not found")
+    if (result.rows.length == 0) return res.status(400).send("Account not found")
 
-    authUser(rows[0]);
+    res.cookie('User_Auth', authUser(result));
 
-    return res.json(rows);
+    return res.json(result);
 }
 
 export async function createUserHandler(req, res) {

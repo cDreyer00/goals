@@ -7,8 +7,8 @@ export function hash(input) {
 
 export function encryptObject(input) {
     const key = randomBytes(32);
+    console.log(key);
     const iv = randomBytes(16);
-
     const cipher = createCipheriv('aes256', key, iv);
 
     const tojs = JSON.stringify(input);
@@ -18,8 +18,9 @@ export function encryptObject(input) {
 }
 
 export function decryptObject(encrypted, key, iv) {
+
     const decipher = createDecipheriv('aes256', key, iv);
     const decrypted = decipher.update(encrypted, 'hex', 'utf-8') + decipher.final('utf-8');
-
+    
     return JSON.parse(decrypted);
 }
