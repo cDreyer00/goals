@@ -7,7 +7,7 @@ import cookieParser from "cookie-parser";
 const app = express();
 
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
 
 
@@ -19,5 +19,5 @@ app.listen(process.env.PORT, () => console.log(`SERVER RUNNING ON http://localho
 
 // execute for develop
 
-// import {execute, usersTable, goalsTable, createUsersTable, createGoalsTable} from './database.js'
-// execute(createUsersTable);
+import { execute, usersTable, goalsTable, createUsersTable, createGoalsTable } from './database.js'
+//console.log(await execute(`select * from ${usersTable}`));
