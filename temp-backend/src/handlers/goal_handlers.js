@@ -1,13 +1,26 @@
+import { getGoalsService, createGoalService } from "../services/goal_services.js"
+import { userIn } from "../auth.js";
 
 export async function createGoalHandler(req, res) {
+    const { title, description, value, current_value, due_date } = req.body;
+    const user_id = userIn.id;
 
-    return res.json({ok: true});
+    const newGoal = await createGoalService({
+        title,
+        description,
+        value,
+        current_value,
+        due_date,
+        user_id
+    });
 
-    // const { title, description, value, achievement_time } = req.body;
+    return res.json({ newGoal });
+}
 
-    // const new_goal = await goalServices.insertGoal({ title, description, value, achievement_time, user_id })
-    // const allUserGoals = await goalServices.getGoals({ user_id });
-    // return res.json({ new_goal: new_goal, all_goals: allUserGoals });
+export async function getUserGoalsHandler(req, res) {
+    const user_id = userIn.id;
 
-    // return res.status(400).send("New goals could not be created, try again");
+    const user_goals = await getGoalsService({ user_id });
+
+    return res.json(user_goals);
 }

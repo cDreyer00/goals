@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { loginUserHandler, createUserHandler } from "./handlers/user_handlers.js";
 import "./auth.js"
-import { authUser, checkAuth } from "./auth.js";
-import { createGoalHandler } from "./handlers/goal_handlers.js";
+import { checkAuth } from "./auth.js";
+import { createGoalHandler, getUserGoalsHandler } from "./handlers/goal_handlers.js";
 
 export const router = Router();
 
@@ -15,18 +15,18 @@ router.post("/user", createUserHandler);
 
 /* ----- GOALS ROUTES ----- */
 
+router.get("/user/goals", checkAuth, getUserGoalsHandler);
 router.post("/goal", checkAuth, createGoalHandler);
 router.put("/goal");
 router.delete("/goal");
 
-router.get("/user/goals");
 
 
 // ----- EMAIL CONFIRMATION -----
 router.get("/confirmation/:token", async (req, res) => {
 
     const { token } = req.params;
-    console.log(token);
+
     try {
         const { sub } = verify(token, process.env.JWT_HASH)
 

@@ -1,36 +1,38 @@
 import { encryptObject, decryptObject } from "./cypher.js"
 
+export let userIn = {}
 
 export function checkAuth(req, res, next) {
     const userAuth = req.cookies.User_Auth;
 
     if (!userAuth) {
+        userIn = {};
         return res.status(400).send("You dont have permission to access this")
     }
 
     try {
-        console.log(decryptObject(userAuth.encrypted, userAuth.key, userAuth.iv))
+        userIn = decryptObject(userAuth.encrypted, userAuth.key, userAuth.iv);
 
+        return next();
     } catch (err) {
         return res.status(400).send("You dont have permission to access this")
     }
 
-    return next();
 }
 
 export function authUser(user) {
-    user = convertToObject(user.metaData, user.rows[0]);
-
+    const userRows = ["id", "name", "email", "password", "email_verified"]
+    user = convertToObject(userRows, user);
+    userIn = user;
     return encryptObject(user);
 }
 
 function convertToObject(titles, datas) {
-    titles = titles.map(item => item.name);
-
     const obj = {};
-    for (let i = 0; i < titles.length; i++) {
-        obj[titles[i]] = datas[i];
-    }
+
+    titles = titles.map((title, index) => {        
+        obj[title] = datas[index]
+    });
 
     return obj;
 }
