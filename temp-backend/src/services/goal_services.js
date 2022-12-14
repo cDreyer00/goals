@@ -1,4 +1,5 @@
 import { execute, goalsTable } from "../database.js";
+import { convertToObject } from "../auth.js";
 
 export async function createGoalService({ title, description, value, current_value, due_date, user_id }) {
 
@@ -8,9 +9,9 @@ export async function createGoalService({ title, description, value, current_val
     try {
         const query = `
         INSERT INTO 
-            ${goalsTable}(title, description, value, due_date, current_value, user_id)
+            ${goalsTable}(title, description, value, current_value, due_date, user_id)
         VALUES
-             (:title, :description, :value, TO_DATE(:due_date, 'YYYY-MM-DD'), :current_value, :user_id)
+             (:title, :description, :value, :current_value, TO_DATE(:due_date, 'YYYY-MM-DD'), :user_id)
         `
         const values = { title, description, value, due_date, current_value, user_id }
 
@@ -20,7 +21,6 @@ export async function createGoalService({ title, description, value, current_val
     }
 }
 
-
 export async function getGoalsService({ user_id }) {
     try {
         const query = `
@@ -28,8 +28,13 @@ export async function getGoalsService({ user_id }) {
                 WHERE
                     user_id = :user_id
         `
-        return await execute(query, {user_id});
+        let result = await execute(query, { user_id });
+        result = convertToObject(result)
+
+        return result;
     } catch (error) {
         throw new Error(error);
     }
 }
+
+

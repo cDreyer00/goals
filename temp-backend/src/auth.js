@@ -17,22 +17,28 @@ export function checkAuth(req, res, next) {
     } catch (err) {
         return res.status(400).send("You dont have permission to access this")
     }
-
 }
 
 export function authUser(user) {
-    const userRows = ["id", "name", "email", "password", "email_verified"]
-    user = convertToObject(userRows, user);
-    userIn = user;
+    user = convertToObject(user);
+    userIn = user[1];
+    console.log(userIn);
     return encryptObject(user);
 }
 
-function convertToObject(titles, datas) {
-    const obj = {};
+export function convertToObject(data) {
 
-    titles = titles.map((title, index) => {        
-        obj[title] = datas[index]
+    // Get the field names from the metadata
+    const fields = data.metaData.map(field => field.name);
+
+    // Create an array of objects with the field names as keys
+    const objects = data.rows.map(row => {
+        const obj = {};
+        row.forEach((value, index) => {
+            obj[fields[index]] = value;
+        });
+        return obj;
     });
 
-    return obj;
+    return objects;
 }
