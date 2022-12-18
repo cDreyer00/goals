@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "Goal" ALTER COLUMN "value" SET DATA TYPE TEXT;
