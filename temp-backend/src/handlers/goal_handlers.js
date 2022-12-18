@@ -1,8 +1,8 @@
-import { getGoalsService, createGoalService } from "../services/goal_services.js"
-import { userIn } from "../auth.js";
+import { getGoalsService, createGoalService, editGoalService } from "../services/goal_services.js"
+import { userIn, convertToObject } from "../auth.js";
 
 export async function createGoalHandler(req, res) {
-    const { title, description, value, current_value, due_date } = req.body;    
+    const { title, description, value, current_value, due_date } = req.body;
 
     const user_id = userIn.ID;
 
@@ -22,22 +22,30 @@ export async function getUserGoalsHandler(req, res) {
     const user_id = userIn.ID;
 
     let user_goals = await getGoalsService({ user_id });
-
+    user_goals = convertToObject(user_goals);
     return res.json(user_goals);
 }
 
-export async function editGoalHandler(req, res){
-    const { title, description, value, current_value, due_date } = req.body;
+export async function editGoalHandler(req, res) {
+    const { id, title, description, value, current_value, due_date } = req.body;    
 
-    if(!id){
-        return res.status(400).send("no goal id provided");
+    if (!id || !title || !description || !due_date) {
+        return res.status(400).send("one or more requirements missing");
     }
+
+    try{
+        await editGoalService({ id, title, description, value, current_value, due_date });
+        return res.send("goal edited succesfully");
+    }catch(e){
+        return res.status(500).send(e);
+    }
+    
 }
 
-export async function deleteGoalHandler(req, res){
-    const {id} = req.body
+export async function deleteGoalHandler(req, res) {
+    const { id } = req.body
 
-    if(!id){
+    if (!id) {
         return res.status(400).send("no goal id provided");
     }
 }

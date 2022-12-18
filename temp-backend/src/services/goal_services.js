@@ -28,13 +28,28 @@ export async function getGoalsService({ user_id }) {
                 WHERE
                     user_id = :user_id
         `
-        let result = await execute(query, { user_id });
-        result = convertToObject(result)
-
+        let result = await execute(query, { user_id });        
         return result;
     } catch (error) {
         throw new Error(error);
     }
 }
 
+export async function editGoalService({ id, title, description, value, current_value, due_date }) {
+    
+    due_date = new Date(due_date.year, due_date.month, due_date.day);
+    due_date = due_date.toISOString().substring(0, 10);
 
+    try{
+        const query = `UPDATE ${goalsTable} 
+            SET title = :title, description = :description, value = :value, current_value = :current_value, due_date = TO_DATE(:due_date, 'YYYY-MM-DD')
+            WHERE id = :id            
+            `
+        const values = {id, title, description, value, current_value, due_date};
+
+        return await execute(query, values);
+
+    }catch(e){
+        throw new Error(e);
+    }
+}
