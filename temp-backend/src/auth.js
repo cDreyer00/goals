@@ -3,7 +3,7 @@ import { encryptObject, decryptObject } from "./cypher.js"
 export let userIn = {}
 
 export function checkAuth(req, res, next) {
-    const userAuth = req.cookies.User_Auth;
+    const userAuth = req.cookies.User_Auth;    
 
     if (!userAuth) {
         userIn = {};
@@ -20,14 +20,11 @@ export function checkAuth(req, res, next) {
 }
 
 export function authUser(user) {
-    user = convertToObject(user);
-    userIn = user[1];
-    console.log(userIn);
+    user;
     return encryptObject(user);
 }
 
 export function convertToObject(data) {
-
     // Get the field names from the metadata
     const fields = data.metaData.map(field => field.name);
 
@@ -39,6 +36,5 @@ export function convertToObject(data) {
         });
         return obj;
     });
-
     return objects;
 }

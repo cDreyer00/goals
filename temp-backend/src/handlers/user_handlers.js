@@ -1,6 +1,6 @@
 import { loginUserService, getAllUsersService, createUserService } from "../services/user_services.js"
 import { hash } from "../cypher.js"
-import { authUser } from "../auth.js";
+import { authUser, convertToObject } from "../auth.js";
 
 export async function loginUserHandler(req, res) {
     const { email, password } = req.body;
@@ -13,9 +13,11 @@ export async function loginUserHandler(req, res) {
     const result = await loginUserService({ email, hashedPass });
     if (result.rows == 0) return res.status(400).send("Account not found")
 
-    res.cookie('User_Auth', authUser(result));
+    const user = convertToObject(result)[0];
 
-    return res.json(result);
+    res.cookie('User_Auth', authUser(user));
+    
+    return res.json(user);
 }
 
 export async function createUserHandler(req, res) {

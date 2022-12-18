@@ -2,7 +2,7 @@ import { Router } from "express";
 import { loginUserHandler, createUserHandler } from "./handlers/user_handlers.js";
 import "./auth.js"
 import { checkAuth } from "./auth.js";
-import { createGoalHandler, getUserGoalsHandler } from "./handlers/goal_handlers.js";
+import { createGoalHandler, editGoalHandler, deleteGoalHandler, getUserGoalsHandler } from "./handlers/goal_handlers.js";
 
 export const router = Router();
 
@@ -16,9 +16,9 @@ router.post("/user", createUserHandler);
 /* ----- GOALS ROUTES ----- */
 
 router.get("/user/goals", checkAuth, getUserGoalsHandler);
-router.post("/goal", checkAuth, createGoalHandler);
-router.put("/goal");
-router.delete("/goal");
+router.post("/goal/create", checkAuth, createGoalHandler);
+router.put("/goal/edit", checkAuth, editGoalHandler);
+router.delete("/goal/delete", deleteGoalHandler);
 
 
 
