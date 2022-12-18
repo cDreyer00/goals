@@ -1,4 +1,4 @@
-import { getGoalsService, createGoalService, editGoalService } from "../services/goal_services.js"
+import { getGoalsService, createGoalService, editGoalService, deleteGoalService } from "../services/goal_services.js"
 import { userIn, convertToObject } from "../auth.js";
 
 export async function createGoalHandler(req, res) {
@@ -27,25 +27,29 @@ export async function getUserGoalsHandler(req, res) {
 }
 
 export async function editGoalHandler(req, res) {
-    const { id, title, description, value, current_value, due_date } = req.body;    
+    const { id, title, description, value, current_value, due_date } = req.body;
 
     if (!id || !title || !description || !due_date) {
         return res.status(400).send("one or more requirements missing");
     }
 
-    try{
+    try {
         await editGoalService({ id, title, description, value, current_value, due_date });
         return res.send("goal edited succesfully");
-    }catch(e){
+    } catch (e) {
         return res.status(500).send(e);
     }
-    
+
 }
 
 export async function deleteGoalHandler(req, res) {
     const { id } = req.body
-
-    if (!id) {
-        return res.status(400).send("no goal id provided");
+    if(!id) return res.status(400).send("Goal identifier required");
+    
+    try{
+        await deleteGoalService({id});
+        return res.send("Goal deleted succesfully");
+    }catch(e){
+        return res.status(500).send(e);
     }
 }

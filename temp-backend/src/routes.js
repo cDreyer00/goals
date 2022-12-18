@@ -18,7 +18,7 @@ router.post("/user", createUserHandler);
 router.get("/user/goals", checkAuth, getUserGoalsHandler);
 router.post("/goal/create", checkAuth, createGoalHandler);
 router.put("/goal/edit", checkAuth, editGoalHandler);
-router.delete("/goal/delete", deleteGoalHandler);
+router.delete("/goal/delete", checkAuth, deleteGoalHandler);
 
 
 
