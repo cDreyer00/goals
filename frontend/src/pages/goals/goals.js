@@ -10,28 +10,20 @@ import {GoSignOut} from "react-icons/go"
 
 export default function Goals() {
 
-    const [user, setUser] = useState({});
     const [goals, setGoals] = useState([]);
-
     const navigate = useNavigate();
 
+    console.log(goals[0]);
     useEffect(() => {
-        const token = Cookies.get("token")
+        const authCookie = Cookies.get("User_Auth")
 
-        if (!token) {
+        if (!authCookie) {
             toast.error("You must be logged in order to access this page")
             navigate("/");
             return;
         }
 
         // get user
-        axios.get("/user/infos").then((res) => {
-            setUser(res.data);
-        }).catch((err) => {
-            toast.error("An error has ocurred when trying catch informations, try again")
-            navigate("/");
-        })
-
         LoadGoals();
     }, [])
 
@@ -42,7 +34,7 @@ export default function Goals() {
 
     function checkGoalState(goal) {
         if (goal.completed) {
-            return GoalStatuses.completed;
+            return GoalStatuses.done;
         }
 
         const goalDate = new Date(goal.achievement_time);
@@ -51,38 +43,39 @@ export default function Goals() {
             return GoalStatuses.failed;
         }
 
-        return GoalStatuses.uncompleted;
+        return GoalStatuses.pending;
     }
 
     function handleAddNewGoal() {
         let newGoal = {
             title: null,
             description: null,
-            value: "value",
-            achievement_time: new Date(),
-            status: false,
-            editMode: true
+            value: 0,
+            current_value: 0,
+            due_date: new Date(),
+            status: "Pending",
+            edit: 1
         }
 
-        axios.post("/goal", newGoal).then((res) => {
-            setGoals(res.data.all_goals)
+        axios.post("/goal/create", newGoal).then((res) => {
+            LoadGoals();
         }).catch((err) => {
             toast.error("failed to create new goal, reload page and try again");
         })
-
+        console.log(goals[0]);
     }
 
-    function LoadGoals() {
-        axios.get("/user/goals").then((res) => {
+    function LoadGoals() {        
+        axios.get("/user/goals").then((res) => {            
             setGoals(res.data)
         }).catch((err) => {
+            toast.error(err.message);            
         })
     }
 
     function handlerLogOut() {
         Cookies.remove("token");
     }
-
 
     return (
         <div className="goalsPage">
@@ -98,16 +91,17 @@ export default function Goals() {
 
                 <ul>
                     {Array.from(goals.map((goal) => {
+                        console.log("MAP", goal)                        
                         return (
-                            <li key={goal.id}>
+                            <li key={goal.ID}>
                                 <Goal
-                                    id={goal.id}
-                                    title={goal.title}
-                                    description={goal.description}
-                                    value={goal.value}
-                                    date={getDate(goal.achievement_time)}
+                                    id={goal.ID}
+                                    title={goal.TITLE}
+                                    description={goal.DESCRIPTION}
+                                    value={goal.VALUE}
+                                    date={getDate(goal.DUE_DATE)}
                                     status={checkGoalState(goal)}
-                                    editMode={goal.title == ""}
+                                    edit={goal.EDIT}
                                     onDeleteClick={LoadGoals}
                                 />
                             </li>

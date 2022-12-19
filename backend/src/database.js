@@ -45,9 +45,16 @@ export async function createGoalsTable() {
         due_date DATE,
         value NUMBER,
         current_value NUMBER,
-        user_id NUMBER(10)
+        edit NUMBER(1),
+        status VARCHAR2(20) NOT NULL,
+        user_id NUMBER(10),
+        CHECK (status IN ('Done', 'Pending', 'Failed'))
         )
-    `
+    ` 
 
-    execute(createGoalsTable);
+    const connection = await pool.getConnection();
+
+    await connection.execute(createGoalsTable)
+    connection.commit();
+    connection.close();
 }

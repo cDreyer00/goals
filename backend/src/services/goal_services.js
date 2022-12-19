@@ -1,19 +1,18 @@
 import { execute, goalsTable } from "../database.js";
 import { convertToObject } from "../auth.js";
 
-export async function createGoalService({ title, description, value, current_value, due_date, user_id }) {
-
-    due_date = new Date(due_date.year, due_date.month, due_date.day);
-    due_date = due_date.toISOString().substring(0, 10);
-
+export async function createGoalService({ title, description, value, current_value, due_date, user_id, edit, status }) {
+    
+    due_date= new Date(due_date);
+    
     try {
         const query = `
         INSERT INTO 
-            ${goalsTable}(title, description, value, current_value, due_date, user_id)
+            ${goalsTable}(title, description, value, current_value, due_date, edit, user_id, status)
         VALUES
-             (:title, :description, :value, :current_value, TO_DATE(:due_date, 'YYYY-MM-DD'), :user_id)
+             (:title, :description, :value, :current_value, TRUNC(:due_date), :edit, :user_id, :status)
         `
-        const values = { title, description, value, due_date, current_value, user_id }
+        const values = { title, description, value, due_date, current_value, edit, user_id, status}
 
         return await execute(query, values);
     } catch (error) {
@@ -36,9 +35,6 @@ export async function getGoalsService({ user_id }) {
 }
 
 export async function editGoalService({ id, title, description, value, current_value, due_date }) {
-
-    due_date = new Date(due_date.year, due_date.month, due_date.day);
-    due_date = due_date.toISOString().substring(0, 10);
 
     try {
         const query = `UPDATE ${goalsTable} 

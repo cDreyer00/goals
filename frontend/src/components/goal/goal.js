@@ -11,54 +11,63 @@ import { MdDeleteForever } from "react-icons/md"
 
 export default function Goal(props) {
 
-    const [id, setId] = useState("");
+    const [id, setId] = useState(0);
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [date, setDate] = useState("");
-    const [value, setValue] = useState("");
+    const [date, setDate] = useState(Date);
+    const [value, setValue] = useState(0);
+    const [current_value, setCurrentValue] = useState(0);
     const [status, setStatus] = useState(GoalStatuses);
 
     const [editMode, setEditMode] = useState(props.editMode);
 
 
     useEffect(() => {
-        const { id, title, description, date, value, status } = props;
+        const { id, title, description, date, value, current_value, status } = props;
+        //console.log("ID:", id);
         setId(id)
         setTitle(title)
         setDescription(description)
         setDate(date)
         setValue(value)
+        setCurrentValue(current_value)
         setStatus(status)
     }, [])
 
 
     function handleCheckClick() {
-        const completed = status != GoalStatuses.completed;
+        const s = status != GoalStatuses.done;
 
-        axios.put("/goal/check", {
+        axios.put("/goal/edit", {
             id: id,
-            completed: completed
+            title: title,
+            description: description,
+            date: date,
+            value: value,
+            current_value: current_value,
+            status: s
         })
 
-        if (status == GoalStatuses.completed) {
-            setStatus(GoalStatuses.uncompleted);
+        if (status == GoalStatuses.done) {
+            setStatus(GoalStatuses.pending);
 
             return;
         }
 
-        setStatus(GoalStatuses.completed);
+        setStatus(GoalStatuses.done);
     }
 
     function handleEditClick() {
 
         if (editMode == true) {
-            axios.put("/goal", {
+            axios.put("/goal/edit", {
                 id: id,
                 title: title,
                 description: description,
-                value: String(value),
-                achievement_time: new Date(date),
-                completed: status == GoalStatuses.completed
+                value: value,
+                current_value: current_value,
+                achievement_time: date,
+                status: status
 
             }).then((res) => {
                 toast.success("Goal Edited successfuly");
@@ -71,11 +80,11 @@ export default function Goal(props) {
     }
 
     function handleDeleteClick() {
-        axios.delete("/goal", {
+        axios.delete("/goal/delete", {
             data: {
                 id: id
             }
-        }).then((res) => {            
+        }).then((res) => {
             toast.success(res.data);
             props.onDeleteClick();
         }).catch((err) => {
@@ -87,7 +96,7 @@ export default function Goal(props) {
     return (
         <div className="goalContainer">
             <section className="goalInformations">
-                <input className="goalTitle" placeholder="Title"  value={title} onChange={(e) => setTitle(e.target.value)} disabled={!editMode} />
+                <input className="goalTitle" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} disabled={!editMode} />
                 <textarea className="goalDescription" placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} disabled={!editMode} />
                 <p className="goalValue">$<input type="number" placeholder="0" value={value} onChange={(e) => setValue(e.target.value)} disabled={!editMode} /></p>
                 <input className="goalDate" type="date" value={date} onChange={(e) => setDate(e.target.value)} disabled={!editMode} />
@@ -96,7 +105,7 @@ export default function Goal(props) {
 
             <section className="goalStatusBackground">
                 <button className="goalCheckButton" onClick={handleCheckClick}>
-                    {status == GoalStatuses.completed &&
+                    {status == GoalStatuses.done &&
                         <BsCheckLg className='goalCheck' />
                     }
                 </button>
@@ -118,7 +127,7 @@ export default function Goal(props) {
 }
 
 export const GoalStatuses = {
-    uncompleted: "uncompleted",
-    completed: "completed",
-    failed: "failed"
+    pending: "Pending",
+    done: "Done",
+    failed: "Failed"
 }

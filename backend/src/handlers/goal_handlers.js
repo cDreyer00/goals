@@ -2,7 +2,13 @@ import { getGoalsService, createGoalService, editGoalService, deleteGoalService 
 import { userIn, convertToObject } from "../auth.js";
 
 export async function createGoalHandler(req, res) {
-    const { title, description, value, current_value, due_date } = req.body;
+    let { title, description, value, current_value, due_date, edit, status } = req.body;
+
+    if(!edit || (edit != 0 && edit != 1)) edit = 0;
+
+    const possibleStatuses = ["Pending", "Done", "Failed"];
+
+    if(!possibleStatuses.includes(status)) status = "Pending";
 
     const user_id = userIn.ID;
 
@@ -12,6 +18,8 @@ export async function createGoalHandler(req, res) {
         value,
         current_value,
         due_date,
+        edit,
+        status,
         user_id
     });
 
