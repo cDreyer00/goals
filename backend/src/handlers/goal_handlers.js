@@ -1,5 +1,5 @@
 import { getGoalsService, createGoalService, editGoalService, deleteGoalService } from "../services/goal_services.js"
-import { userIn, convertToObject } from "../auth.js";
+import { userIn } from "../auth.js";
 
 export async function createGoalHandler(req, res) {
     let { title, description, value, current_value, due_date, edit, status } = req.body;

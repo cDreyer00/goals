@@ -1,5 +1,5 @@
-import { execute, goalsTable } from "../database.js";
-import { convertToObject } from "../auth.js";
+import Database from "../database/database.js"
+const db = new Database();
 
 export async function createGoalService({ title, description, value, current_value, due_date, user_id, edit, status }) {
     
@@ -8,7 +8,7 @@ export async function createGoalService({ title, description, value, current_val
     try {
         const query = `
         INSERT INTO 
-            ${goalsTable}(title, description, value, current_value, due_date, edit, user_id, status)
+            goals(title, description, value, current_value, due_date, edit, user_id, status)
         VALUES
              (:title, :description, :value, :current_value, TRUNC(:due_date), :edit, :user_id, :status)
         `
@@ -23,7 +23,7 @@ export async function createGoalService({ title, description, value, current_val
 export async function getGoalsService({ user_id }) {
     try {
         const query = `
-            SELECT * FROM ${goalsTable}
+            SELECT * FROM goals
                 WHERE
                     user_id = :user_id
         `
@@ -37,7 +37,7 @@ export async function getGoalsService({ user_id }) {
 export async function editGoalService({ id, title, description, value, current_value, due_date }) {
 
     try {
-        const query = `UPDATE ${goalsTable} 
+        const query = `UPDATE goals 
             SET title = :title, description = :description, value = :value, current_value = :current_value, due_date = TO_DATE(:due_date, 'YYYY-MM-DD')
             WHERE id = :id            
             `
@@ -51,7 +51,7 @@ export async function editGoalService({ id, title, description, value, current_v
 }
 export async function deleteGoalService({ id }) {
     try {
-        const query = `DELETE FROM ${goalsTable} WHERE id = :id`;
+        const query = `DELETE FROM goals WHERE id = :id`;
         const values = { id: id };
 
         return await execute(query, values);

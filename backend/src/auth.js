@@ -23,18 +23,3 @@ export function authUser(user) {
     user;
     return encryptObject(user);
 }
-
-export function convertToObject(data) {
-    // Get the field names from the metadata
-    const fields = data.metaData.map(field => field.name);
-
-    // Create an array of objects with the field names as keys
-    const objects = data.rows.map(row => {
-        const obj = {};
-        row.forEach((value, index) => {
-            obj[fields[index]] = value;
-        });
-        return obj;
-    });
-    return objects;
-}

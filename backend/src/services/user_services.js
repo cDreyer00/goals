@@ -1,39 +1,31 @@
-import { execute, usersTable } from "../database.js"
+import Database from "../database/database.js"
 
-export async function loginUserService({ email, hashedPass }) {
-    // Validate the arguments
-    if (!email || typeof email !== "string") {
-        throw new Error("Invalid email argument");
-    }
+const db = new Database();
 
-    if (!hashedPass || typeof hashedPass !== "string") {
-        throw new Error("Invalid password argument");
-    }
-
-    try {
-        // Use a prepared statement to execute the query
-        const query = `SELECT * FROM ${usersTable} WHERE email = :email AND password = :hashedPass`
-        const values = { email, hashedPass };
-        return await execute(query, values);
-    } catch (err) {
-        return err;
-    }
+export function loginUserService(email, hashedPass) {
+    return db.getValues("users")
+        .then((users) => {
+            return users.find((user) => user.email == email && user.password == hashedPass);
+        })
+        .catch((err) => err)
 }
 
-export async function createUserService({ name, email, hashedPass }) {
-    try {
-        const query = `INSERT INTO ${usersTable}(name, email, password) VALUES (:name, :email, :hashedPass)`
-        const values = {name, email, hashedPass};
-        return await execute(query, values);
-    } catch (err) {
-        return err.message;
-    }
+export function createUserService({ name, email, hashedPass }) {
+
+    const sql = `INSERT INTO users(name, email, password) VALUES (?, ?, ?)`;
+    const values = [name, email, hashedPass];
+
+    return db.execute(sql, values)
+        .then((res) => {
+            return res;
+        })
+        .catch((err) => { throw err });
 }
 
 export async function getAllUsersService() {
     try {
-        const query = `SELECT * FROM ${usersTable}`;
-        return await execute(query);
+        const sql = `SELECT * FROM users`;
+        return await execute(sql);
     } catch (err) {
         return err.message;
     }
@@ -41,8 +33,8 @@ export async function getAllUsersService() {
 
 export async function getUserService({ id }) {
     try {
-        const query = `SELECT * FROM ${usersTable} WHERE id=${id}`;
-        return await execute(query);
+        const sql = `SELECT * FROM users WHERE id=${id}`;
+        return await execute(sql);
     } catch (err) {
         return err.message;
     }
