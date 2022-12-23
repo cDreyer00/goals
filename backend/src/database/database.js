@@ -27,6 +27,6 @@ export default class Database {
 }
 
 // const dbase = new Database();
-// dbase.getValues("users")
+// dbase.getValues("goals")
 // .then((users)=> console.log(users))
 // .catch((err) => console.log(err));

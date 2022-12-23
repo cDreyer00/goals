@@ -10,27 +10,31 @@ export async function createGoalHandler(req, res) {
 
     if(!possibleStatuses.includes(status)) status = "Pending";
 
-    const user_id = userIn.ID;
+    const user_id = userIn.id;
 
-    const newGoal = await createGoalService({
-        title,
-        description,
-        value,
-        current_value,
-        due_date,
-        edit,
-        status,
-        user_id
-    });
+    try{
+        const result = await createGoalService({
+            title,
+            description,
+            value,
+            current_value,
+            due_date,
+            edit,
+            status,
+            user_id
+        });
 
-    return res.json({ newGoal });
+        return res.json(result);
+    }catch(e){
+        return res.status(500).json({message: e.message});
+    }
+
 }
 
 export async function getUserGoalsHandler(req, res) {
-    const user_id = userIn.ID;
+    const user_id = userIn.id;
 
     let user_goals = await getGoalsService({ user_id });
-    user_goals = convertToObject(user_goals);
     return res.json(user_goals);
 }
 

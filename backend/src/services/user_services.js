@@ -7,7 +7,7 @@ export function loginUserService(email, hashedPass) {
         .then((users) => {
             return users.find((user) => user.email == email && user.password == hashedPass);
         })
-        .catch((err) => err)
+        .catch((err) => { throw err })
 }
 
 export function createUserService({ name, email, hashedPass }) {
