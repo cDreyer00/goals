@@ -20,6 +20,8 @@
     "node-rsa": "^1.1.1",
     "nodemailer": "^6.8.0",
     "nodemon": "^2.0.20",
-    "oracledb": "^5.5.0"
+    "oracledb": "^5.5.0",
+    "sqlite": "^4.1.2",
+    "sqlite3": "^5.1.4"
   }
 }
