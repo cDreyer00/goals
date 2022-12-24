@@ -3,8 +3,11 @@ import { router } from "./routes.js";
 import bodyParser from "body-parser";
 import "dotenv/config"
 import cookieParser from "cookie-parser";
+import cors from 'cors';
 
 const app = express();
+
+app.use(cors());
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))

@@ -15,13 +15,13 @@ router.get("/", (req, res) => res.json({ ok: true }))
 
 router.post("/login", loginUserHandler);
 router.post("/user", createUserHandler);
-router.get("/user/goals", checkAuth, getUserGoalsHandler);
+router.get("/user/goals", getUserGoalsHandler);
 
 /* ----- GOALS ROUTES ----- */
 
-router.post("/goal/create", checkAuth, createGoalHandler);
-router.put("/goal/edit", checkAuth, editGoalHandler);
-router.delete("/goal/delete", checkAuth, deleteGoalHandler);
+router.post("/goal/create", createGoalHandler);
+router.put("/goal/edit", editGoalHandler);
+router.delete("/goal/delete", deleteGoalHandler);
 
 
 

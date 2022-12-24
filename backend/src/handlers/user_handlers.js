@@ -1,6 +1,6 @@
 import { loginUserService, getAllUsersService, createUserService } from "../services/user_services.js"
 import { hash } from "../cypher.js"
-import { authUser } from "../auth.js";
+import { authUser, userIn } from "../auth.js";
 
 export async function loginUserHandler(req, res) {
     const { email, password } = req.body;
@@ -16,8 +16,8 @@ export async function loginUserHandler(req, res) {
         if(!user){
             return res.status(400).send("Account not found");
         }
-        
         res.cookie('User_Auth', authUser(user));
+
         return res.json(user);
     }catch(e){
         res.status(500).send("A server error has ocurred");
@@ -38,5 +38,4 @@ export async function createUserHandler(req, res) {
     }catch(e){
         return res.status(500).json(e.message)
     }
-
 }

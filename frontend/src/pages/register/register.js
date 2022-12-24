@@ -2,7 +2,7 @@ import "./style.scss"
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, Input } from "../../components/input/Input"
-import axios from "axios";
+import api from "../../services/api.js";
 import { toast } from "react-toastify";
 
 export default function Register() {
@@ -14,7 +14,7 @@ export default function Register() {
    function handleSubmit(e) {
       e.preventDefault();
 
-      axios.post("/user", {
+      api.post("/user", {
          name: name,
          email: email,
          password: password

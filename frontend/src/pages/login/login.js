@@ -1,10 +1,11 @@
 import "./style.scss"
 import { useEffect, useState } from "react"
-import axios from "axios"
+import api from "../../services/api";
 import { Button, Input } from "../../components/input/Input"
 
 import { toast } from 'react-toastify';
 import { Link, Navigate, useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 export default function Login() {
 
@@ -15,11 +16,12 @@ export default function Login() {
     function onSubmit(e) {
         e.preventDefault()
 
-        axios.post("/login", {
+        api.post("/login", {
             email: email,
             password: password,
 
         }).then(({ data }) => {
+            Cookies.set("User_Auth", data, {expires: 7});
             toast.success("Welcome " + data.name)
             navigate("/goals");
 
@@ -28,6 +30,7 @@ export default function Login() {
                 toast.warning(response.data)
             }
             else {
+                
                 toast.error(response.data)
             }
         })

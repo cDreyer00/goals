@@ -3,7 +3,7 @@ import Cookies from "js-cookie"
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { toast, ToastContainer } from "react-toastify"
-import axios from "axios"
+import api from "../../services/api"
 import { Button } from "../../components/input/Input"
 import Goal, { GoalStatuses } from "../../components/goal/goal.js"
 import {GoSignOut} from "react-icons/go"
@@ -12,11 +12,10 @@ export default function Goals() {
 
     const [goals, setGoals] = useState([]);
     const navigate = useNavigate();
-
-    console.log(goals[0]);
+    
     useEffect(() => {
         const authCookie = Cookies.get("User_Auth")
-
+        console.log(authCookie);
         if (!authCookie) {
             toast.error("You must be logged in order to access this page")
             navigate("/");
@@ -62,7 +61,7 @@ export default function Goals() {
             edit: 1
         }
 
-        axios.post("/goal/create", newGoal).then((res) => {
+        api.post("/goal/create", newGoal).then((res) => {
             LoadGoals();
         }).catch((err) => {
             toast.error("failed to create new goal, reload page and try again");
@@ -71,7 +70,7 @@ export default function Goals() {
     }
 
     function LoadGoals() {        
-        axios.get("/user/goals").then((res) => {            
+        api.get("/user/goals").then((res) => {            
             setGoals(res.data)
         }).catch((err) => {
             toast.error(err.message);            

@@ -1,8 +1,7 @@
 import "./goal.scss"
 import Check from "../../assets/check.svg"
 import { useEffect, useState } from "react";
-import axios from "axios";
-
+import api from "../../services/api.js";
 import { BsCheckLg } from "react-icons/bs"
 import { AiFillEdit, AiOutlineCheck } from "react-icons/ai"
 import { GiConfirmed } from "react-icons/gi"
@@ -38,7 +37,7 @@ export default function Goal(props) {
     function handleCheckClick() {
         const s = status != GoalStatuses.done;
 
-        axios.put("/goal/edit", {
+        api.put("/goal/edit", {
             id: id,
             title: title,
             description: description,
@@ -60,7 +59,7 @@ export default function Goal(props) {
     function handleEditClick() {
 
         if (editMode == true) {
-            axios.put("/goal/edit", {
+            api.put("/goal/edit", {
                 id: id,
                 title: title,
                 description: description,
@@ -80,7 +79,7 @@ export default function Goal(props) {
     }
 
     function handleDeleteClick() {
-        axios.delete("/goal/delete", {
+        api.delete("/goal/delete", {
             data: {
                 id: id
             }

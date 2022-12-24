@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import Login from "./pages/login/login";
 import { Route, Link, BrowserRouter, Routes } from "react-router-dom";
 import { ToastContainer, Flip } from "react-toastify";
@@ -30,7 +29,7 @@ function App() {
                 color: 'gray',
                 fontSize: 'medium'
             }}>
-                v0.0.1
+                v0.0.2
             </p>
         </div>
     );
