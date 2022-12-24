@@ -28,8 +28,13 @@ export default function Goals() {
     }, [])
 
     function getDate(date) {
-        date = date.split("T")[0].split("-");
-        return `${date[0]}-${date[1]}-${date[2]}`
+        try{
+            console.log("DATE: ", date)
+            date = date.split("T")[0].split("-");
+            return `${date[0]}-${date[1]}-${date[2]}`
+        }catch(e){
+            return null;
+        }
     }
 
     function checkGoalState(goal) {
@@ -93,15 +98,15 @@ export default function Goals() {
                     {Array.from(goals.map((goal) => {
                         console.log("MAP", goal)                        
                         return (
-                            <li key={goal.ID}>
+                            <li key={goal.id}>
                                 <Goal
-                                    id={goal.ID}
-                                    title={goal.TITLE}
-                                    description={goal.DESCRIPTION}
-                                    value={goal.VALUE}
-                                    date={getDate(goal.DUE_DATE)}
+                                    id={goal.id}
+                                    title={goal.title}
+                                    description={goal.description}
+                                    value={goal.value}
+                                    date={getDate(goal.due_date)}
                                     status={checkGoalState(goal)}
-                                    edit={goal.EDIT}
+                                    edit={goal.edit}
                                     onDeleteClick={LoadGoals}
                                 />
                             </li>
