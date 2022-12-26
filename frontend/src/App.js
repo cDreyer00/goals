@@ -29,7 +29,7 @@ function App() {
                 color: 'gray',
                 fontSize: 'medium'
             }}>
-                v0.0.2
+                v0.1.1
             </p>
         </div>
     );
