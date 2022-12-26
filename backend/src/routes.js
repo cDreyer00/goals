@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { loginUserHandler, createUserHandler } from "./handlers/user_handlers.js";
+import { loginUserHandler, createUserHandler, getAllUsersHandler } from "./handlers/user_handlers.js";
 import "./auth.js"
 import { checkAuth } from "./auth.js";
 import { createGoalHandler, editGoalHandler, deleteGoalHandler, getUserGoalsHandler } from "./handlers/goal_handlers.js";
@@ -13,6 +13,7 @@ router.get("/", (req, res) => res.json({ ok: true }))
 
 /* ----- USER ROUTES ----- */
 
+//router.post("/login", (req, res) => res.json({ page: "login" }));
 router.post("/login", loginUserHandler);
 router.post("/user", createUserHandler);
 router.get("/user/goals", getUserGoalsHandler);
@@ -22,6 +23,8 @@ router.get("/user/goals", getUserGoalsHandler);
 router.post("/goal/create", createGoalHandler);
 router.put("/goal/edit", editGoalHandler);
 router.delete("/goal/delete", deleteGoalHandler);
+
+router.get("/users", getAllUsersHandler)
 
 
 

@@ -23,12 +23,9 @@ export function createUserService({ name, email, hashedPass }) {
 }
 
 export async function getAllUsersService() {
-    try {
-        const sql = `SELECT * FROM users`;
-        return await execute(sql);
-    } catch (err) {
-        return err.message;
-    }
+    return db.getValues("users")
+        .then((users) => users.map(user => user.email))
+        .catch((err) => { throw err });
 }
 
 export async function getUserService({ id }) {

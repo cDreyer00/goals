@@ -39,3 +39,7 @@ export async function createUserHandler(req, res) {
         return res.status(500).json(e.message)
     }
 }
+
+export async function getAllUsersHandler(req, res){
+    return res.json(await getAllUsersService());
+}
