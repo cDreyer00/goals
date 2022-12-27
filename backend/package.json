@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node ./index.js",
-    "dev": "nodemon ./src/index.js"
+    "dev": "nodemon ./index.js"
   },
   "author": "cdreyer",
   "license": "MIT",
@@ -22,6 +22,7 @@
     "nodemailer": "^6.8.0",
     "nodemon": "^2.0.20",
     "oracledb": "^5.5.0",
+    "request": "^2.88.2",
     "sqlite": "^4.1.2",
     "sqlite3": "^5.1.4"
   }

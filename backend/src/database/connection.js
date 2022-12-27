@@ -1,51 +1,57 @@
-import sqlite3 from "sqlite3";
-import path from 'path';
-import { fileURLToPath } from 'url';
+import OracleDB from "oracledb";
+import "dotenv/config"
+import request from "request";
 
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+//OracleDB.initOracleClient({ libDir: '../../oracle_instant/instantclient_21_7' });
+//testname
+//test
+//Cristian@123
 
-const db = new sqlite3.Database(`${__dirname}/.db`, (err) => {
-    if (err) return console.error(err.message);
-
-    console.log("connected to database");
-});
-
+export default function connection() {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const db = await OracleDB.getConnection({ user: "admin", password: process.env.AD_PASSWORD, connectString: `${process.env.AD_USERNAME}_high`, cloud: true });
+            resolve(db);
+        } catch (e) {
+            reject(e);
+        }
+    });
+}
 
 // CREATE MAIN TABLES
 
-function createUsersTable() {
+async function createUsersTable() {
+    console.log("creating");
     const createUsersTable = `
-    CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY,
-        name TEXT NOT NULL,
-        email TEXT NOT NULL UNIQUE,
-        password TEXT NOT NULL
-    )`;
+      CREATE TABLE users (
+          id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+          name VARCHAR2(255) NOT NULL,
+          email VARCHAR2(255) NOT NULL,
+          password VARCHAR2(255) NOT NULL
+          )`;
 
-    db.run(createUsersTable);
+    await connection().then(db => db.execute(createUsersTable));
 }
 
-function createGoalsTable() {
+async function createGoalsTable() {
     const createGoalsTable = `
-    CREATE TABLE IF NOT EXISTS goals (
-      id INTEGER PRIMARY KEY,
-      title TEXT,
-      description TEXT,
-      due_date DATE,
-      value NUMERIC,
-      current_value NUMERIC,
-      edit INTEGER,
-      status TEXT NOT NULL,
-      user_id NUMERIC,
-      CHECK (status IN ('Done', 'Pending', 'Failed'))
-      )
-  `;
-    db.run(createGoalsTable);
+        CREATE TABLE goals (
+          id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+          title VARCHAR2(255),
+          description VARCHAR2(255),
+          due_date DATE,
+          value NUMBER,
+          current_value NUMBER,
+          edit NUMBER,
+          status VARCHAR2(255) NOT NULL,
+          user_id NUMBER,
+          CHECK (status IN ('Done', 'Pending', 'Failed'))
+        )`;
+
+    await connection().then(db => db.execute(createGoalsTable));
 }
 
-createUsersTable();
-createGoalsTable();
 
-export default db;
+// createUsersTable();
+// createGoalsTable();

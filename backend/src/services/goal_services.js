@@ -9,9 +9,9 @@ export async function createGoalService({ title, description, value, current_val
     INSERT INTO 
         goals(title, description, value, current_value, due_date, edit, user_id, status)
     VALUES
-         (?, ?, ?, ?, ?, ?, ?, ?)
+        (:title, :description, :value, :current_value, :due_date, :edit, :user_id, :status)
     `
-    const values = [title, description, value, due_date, current_value, edit, user_id, status]
+    const values = [title, description, value, current_value, due_date, edit, user_id, status]
 
     return await db.execute(query, values);
 }
@@ -32,8 +32,8 @@ export async function editGoalService({ id, title, description, value, current_v
 
     try {
         const query = `UPDATE goals 
-            SET title = ?, description = ?, value = ?, current_value = ?, due_date = TO_DATE(?, 'YYYY-MM-DD')
-            WHERE id = ?            
+            SET title = :title, description = :description, value = :value, current_value = :current_value, due_date = TO_DATE(:due_date, 'YYYY-MM-DD')
+            WHERE id = :id            
             `
         const values = { id, title, description, value, current_value, due_date };
 

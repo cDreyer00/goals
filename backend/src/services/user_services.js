@@ -12,11 +12,11 @@ export function loginUserService(email, hashedPass) {
 
 export function createUserService({ name, email, hashedPass }) {
 
-    const sql = `INSERT INTO users(name, email, password) VALUES (?, ?, ?)`;
+    const sql = `INSERT INTO users(name, email, password) VALUES (:name, :email, :password)`;
     const values = [name, email, hashedPass];
 
     return db.execute(sql, values)
-        .then((res) => {
+        .then((res) => {            
             return res;
         })
         .catch((err) => { throw err });
