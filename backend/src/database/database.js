@@ -1,59 +1,82 @@
-import connection from "./connection.js";
+import "dotenv/config"
+import axios from "axios";
+
 
 export default class Database {
 
-    execute(sql, values) {
-        return new Promise(async (resolve, reject) => {
-            await connection().then(db => {
-                db.execute(sql, values, (err) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve("Operation succeeded");
-                    }
-                });
-                db.commit();
+    post(sql, values) {
+        return new Promise((resolve, reject) => {
+            axios({
+                method: 'post',
+                url: 'https://goalsbackend.glitch.me/db',
+                params: {
+                    sql: sql,
+                    values: values
+                }
+            }).then((res) => {
+                resolve(res.data);
+            }).catch((err) => {
+                reject(err);
             })
-                .catch(e => reject(e));
-
         })
     }
 
-    getValues(table) {
-        const sql = `SELECT * FROM ${table}`;
-        return new Promise(async (resolve, reject) => {
-            
-            await connection()
-                .then(async (db) => {
-                    let { metaData, rows } = await db.execute(sql);                    
-                    metaData = metaData.map(column => {
-                        return { name: column.name.toLowerCase() };
-                    });
-                    const result = rows.map(row => {
-                        return metaData.reduce((obj, column, index) => {
-                            obj[column.name] = row[index];
-                            return obj;
-                        }, {});
-                    });
-                    resolve(result);
-                })
-                .catch((e) => reject(e))
+    get(table) {
+        const sql = `SELECT * FROM ${table}`
+
+        return new Promise((resolve, reject) => {
+            axios({
+                method: 'get',
+                url: 'https://goalsbackend.glitch.me/db',
+                params: {
+                    sql: sql,
+                }
+            }).then((res) => {
+                resolve(res.data);
+            }).catch((err) => {
+                reject(err);
+            })
         })
     }
 
 }
 
 
-// const dbase = new Database();
+const dbase = new Database();
 
+async function createUsersTable() {
 
-// dbase.execute(`INSERT INTO goals
-//                     (title, description, value, current_value, edit, status, user_id)
-//                 VALUES
-//                     (:title, :description, :value, :current_value, :edit, :status, :user_id)
-//                  `, ["title", "description", 999, 444, 0, "Pending", "0"])
+    const createUsersTable = `
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        password TEXT NOT NULL
+      )`;
 
+    await dbase.post(createUsersTable);
+}
 
-// dbase.getValues("goals")
-//     .then((users) => console.log(users))
-//     .catch((err) => console.log(err));
+async function createGoalsTable() {
+    const createGoalsTable = `
+    CREATE TABLE IF NOT EXISTS goals (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT,
+        description TEXT,
+        due_date DATE,
+        value NUMERIC,
+        current_value NUMERIC,
+        edit INTEGER,
+        status TEXT NOT NULL,
+        user_id NUMERIC,
+        CHECK (status IN ('Done', 'Pending', 'Failed'))
+      )`;
+
+    await dbase.post(createGoalsTable);
+}
+
+createUsersTable();
+createGoalsTable();
+
+//dbase.post("DELETE FROM users");
+//dbase.post("DELETE FROM goals");

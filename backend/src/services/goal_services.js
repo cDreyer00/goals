@@ -9,15 +9,15 @@ export async function createGoalService({ title, description, value, current_val
     INSERT INTO 
         goals(title, description, value, current_value, due_date, edit, user_id, status)
     VALUES
-        (:title, :description, :value, :current_value, :due_date, :edit, :user_id, :status)
+        (?, ?, ?, ?, ?, ?, ?, ?)
     `
     const values = [title, description, value, current_value, due_date, edit, user_id, status]
 
-    return await db.execute(query, values);
+    return await db.post(query, values);
 }
 
 export async function getGoalsService({ user_id }) {
-    return db.getValues('goals')
+    return db.get('goals')
         .then((goals) => {
             return goals.filter((goal) => {                
                 if (goal.user_id == user_id){
@@ -32,10 +32,10 @@ export async function editGoalService({ id, title, description, value, current_v
 
     try {
         const query = `UPDATE goals 
-            SET title = :title, description = :description, value = :value, current_value = :current_value, due_date = TO_DATE(:due_date, 'YYYY-MM-DD')
-            WHERE id = :id            
+            SET title = ?, description = ?, value = ?, current_value = ?, due_date = TO_DATE(?, 'YYYY-MM-DD')
+            WHERE id = ?
             `
-        const values = { id, title, description, value, current_value, due_date };
+        const values = [id, title, description, value, current_value, due_date];
 
         return await execute(query, values);
 
@@ -45,8 +45,8 @@ export async function editGoalService({ id, title, description, value, current_v
 }
 export async function deleteGoalService({ id }) {
     try {
-        const query = `DELETE FROM goals WHERE id = :id`;
-        const values = { id: id };
+        const query = `DELETE FROM goals WHERE id = ?`;
+        const values = [id];
 
         return await execute(query, values);
     } catch (error) {

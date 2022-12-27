@@ -3,7 +3,7 @@ import Database from "../database/database.js"
 const db = new Database();
 
 export function loginUserService(email, hashedPass) {
-    return db.getValues("users")
+    return db.get("users")
         .then((users) => {
             return users.find((user) => user.email == email && user.password == hashedPass);
         })
@@ -11,28 +11,18 @@ export function loginUserService(email, hashedPass) {
 }
 
 export function createUserService({ name, email, hashedPass }) {
-
-    const sql = `INSERT INTO users(name, email, password) VALUES (:name, :email, :password)`;
+    const sql = `INSERT INTO users(name, email, password) VALUES (?, ?, ?)`;
     const values = [name, email, hashedPass];
-
-    return db.execute(sql, values)
-        .then((res) => {            
+    return db.post(sql, values)
+        .then((res) => {
             return res;
         })
-        .catch((err) => { throw err });
+        .catch((err) => { 
+            throw err });
 }
 
 export async function getAllUsersService() {
-    return db.getValues("users")
-        .then((users) => users.map(user => user.email))
+    return db.get("users")
+        .then((users) => users.map(user => user.name))
         .catch((err) => { throw err });
-}
-
-export async function getUserService({ id }) {
-    try {
-        const sql = `SELECT * FROM users WHERE id=${id}`;
-        return await execute(sql);
-    } catch (err) {
-        return err.message;
-    }
 }
