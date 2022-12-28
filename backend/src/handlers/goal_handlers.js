@@ -1,16 +1,17 @@
 import { getGoalsService, createGoalService, editGoalService, deleteGoalService } from "../services/goal_services.js"
-import { userIn } from "../auth.js";
-
+import { authUser, checkAuth } from "../auth.js";
+import cookieParser from "cookie-parser";
 export async function createGoalHandler(req, res) {
     let { title, description, value, current_value, due_date, edit, status } = req.body;
-
+    
     if(!edit || (edit != 0 && edit != 1)) edit = 0;
-
+    
     const possibleStatuses = ["Pending", "Done", "Failed"];
-
+    
     if(!possibleStatuses.includes(status)) status = "Pending";
 
-    const user_id = userIn.id;
+    const token = req.headers.token;
+    const user_id = checkAuth(token).id;
 
     try{
         const result = await createGoalService({
@@ -23,18 +24,20 @@ export async function createGoalHandler(req, res) {
             status,
             user_id
         });
-
         return res.json(result);
-    }catch(e){
-        return res.status(500).json({message: e.message});
+    }catch(e){        
+        return res.status(500).json({message: e});
     }
 
 }
 
 export async function getUserGoalsHandler(req, res) {
-    const user_id = userIn.id;
 
+    const token = req.headers.token;    
+    const user_id = checkAuth(token).id;    
+    
     let user_goals = await getGoalsService({ user_id });
+
     return res.json(user_goals);
 }
 
@@ -51,10 +54,15 @@ export async function editGoalHandler(req, res) {
     } catch (e) {
         return res.status(500).send(e);
     }
-
 }
 
 export async function deleteGoalHandler(req, res) {
+    
+    const user = checkAuth(req.headers.token);
+    if(!user){
+        return res.status(400).send("Not authorized");
+    }
+
     const { id } = req.body
     if(!id) return res.status(400).send("Goal identifier required");
     
@@ -62,6 +70,6 @@ export async function deleteGoalHandler(req, res) {
         await deleteGoalService({id});
         return res.send("Goal deleted succesfully");
     }catch(e){
-        return res.status(500).send(e);
+        return res.status(500).send(e.message);
     }
 }

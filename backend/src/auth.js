@@ -1,25 +1,17 @@
-import { encryptObject, decryptObject } from "./cypher.js"
+import pkg from "jsonwebtoken";
 
-export let userIn = {}
+const { verify, sign } = pkg;
 
-export function checkAuth(req, res, next) {
-    const userAuth = req.cookies.User_Auth;
-
-    if (!userAuth) {
-        userIn = {};
-        return res.status(400).send("You dont have permission to access this")
-    }
+export function checkAuth(token) {
 
     try {
-        userIn = decryptObject(userAuth.encrypted, userAuth.key, userAuth.iv);
-
-        return next();
-    } catch (err) {
-        return res.status(400).send("You dont have permission to access this")
+        const user = verify(token, process.env.JWT_SK)
+        return user;
+    }catch(e){
+        return null;
     }
 }
 
-export function authUser(user) {
-    userIn = user;
-    return encryptObject(user);
+export function authUser(user) {    
+    return sign(user, process.env.JWT_SK);
 }

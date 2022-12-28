@@ -4,15 +4,13 @@ const db = new Database();
 export async function createGoalService({ title, description, value, current_value, due_date, user_id, edit, status }) {
 
     due_date = new Date(due_date);
-
     const query = `
     INSERT INTO 
-        goals(title, description, value, current_value, due_date, edit, user_id, status)
+    goals(title, description, value, current_value, due_date, edit, user_id, status)
     VALUES
-        (?, ?, ?, ?, ?, ?, ?, ?)
+    (?, ?, ?, ?, ?, ?, ?, ?)
     `
     const values = [title, description, value, current_value, due_date, edit, user_id, status]
-
     return await db.post(query, values);
 }
 
@@ -37,7 +35,7 @@ export async function editGoalService({ id, title, description, value, current_v
             `
         const values = [id, title, description, value, current_value, due_date];
 
-        return await execute(query, values);
+        return await db.post(query, values);
 
     } catch (e) {
         throw new Error(e);
@@ -48,7 +46,7 @@ export async function deleteGoalService({ id }) {
         const query = `DELETE FROM goals WHERE id = ?`;
         const values = [id];
 
-        return await execute(query, values);
+        return await db.post(query, values);
     } catch (error) {
         throw new Error(error);
     }

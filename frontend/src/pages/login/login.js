@@ -20,9 +20,10 @@ export default function Login() {
             email: email,
             password: password,
 
-        }).then(({ data }) => {
-            Cookies.set("User_Auth", data, {expires: 7});
-            toast.success("Welcome " + data.name)
+        }).then(({data}) => {            
+            Cookies.set("token", data.token, {expires: 7});
+
+            toast.success("Welcome " + data.user.name)
             navigate("/goals");
 
         }).catch(({ response }) => {

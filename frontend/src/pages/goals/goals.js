@@ -6,16 +6,15 @@ import { toast, ToastContainer } from "react-toastify"
 import api from "../../services/api"
 import { Button } from "../../components/input/Input"
 import Goal, { GoalStatuses } from "../../components/goal/goal.js"
-import {GoSignOut} from "react-icons/go"
+import { GoSignOut } from "react-icons/go"
 
 export default function Goals() {
 
     const [goals, setGoals] = useState([]);
     const navigate = useNavigate();
-    
+
     useEffect(() => {
-        const authCookie = Cookies.get("User_Auth")
-        console.log(authCookie);
+        const authCookie = Cookies.get("token")
         if (!authCookie) {
             toast.error("You must be logged in order to access this page")
             navigate("/");
@@ -27,11 +26,10 @@ export default function Goals() {
     }, [])
 
     function getDate(date) {
-        try{
-            console.log("DATE: ", date)
+        try {
             date = date.split("T")[0].split("-");
             return `${date[0]}-${date[1]}-${date[2]}`
-        }catch(e){
+        } catch (e) {
             return null;
         }
     }
@@ -52,8 +50,8 @@ export default function Goals() {
 
     function handleAddNewGoal() {
         let newGoal = {
-            title: null,
-            description: null,
+            title: "null",
+            description: "null",
             value: 0,
             current_value: 0,
             due_date: new Date(),
@@ -61,19 +59,20 @@ export default function Goals() {
             edit: 1
         }
 
-        api.post("/goal/create", newGoal).then((res) => {
-            LoadGoals();
-        }).catch((err) => {
-            toast.error("failed to create new goal, reload page and try again");
-        })
-        console.log(goals[0]);
+        api.post("/goal/create", newGoal)
+            .then(() => {
+                LoadGoals();
+            })
+            .catch((err) => {                
+                toast.error("failed to create new goal, reload page and try again");
+            })
     }
 
-    function LoadGoals() {        
-        api.get("/user/goals").then((res) => {            
+    function LoadGoals() {
+        api.get("/user/goals").then((res) => {
             setGoals(res.data)
         }).catch((err) => {
-            toast.error(err.message);            
+            toast.error(err.message);
         })
     }
 
@@ -85,17 +84,16 @@ export default function Goals() {
         <div className="goalsPage">
             <div className="goalsContainer">
                 <h1>Goals</h1>
-                
+
                 <div className="topButtons">
                     <Button borderColor="yellow" content="Add a new goal" handleClick={handleAddNewGoal} />
                     <button onClick={handlerLogOut} >
-                        <Link to="/"><GoSignOut className="signOutIcon"/></Link>
+                        <Link to="/"><GoSignOut className="signOutIcon" /></Link>
                     </button>
                 </div>
 
                 <ul>
                     {Array.from(goals.map((goal) => {
-                        console.log("MAP", goal)                        
                         return (
                             <li key={goal.id}>
                                 <Goal

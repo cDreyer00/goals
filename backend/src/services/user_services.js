@@ -17,12 +17,13 @@ export function createUserService({ name, email, hashedPass }) {
         .then((res) => {
             return res;
         })
-        .catch((err) => { 
-            throw err });
+        .catch((err) => {
+            throw err
+        });
 }
 
 export async function getAllUsersService() {
     return db.get("users")
-        .then((users) => users.map(user => user.name))
+        .then((users) => users)
         .catch((err) => { throw err });
 }
