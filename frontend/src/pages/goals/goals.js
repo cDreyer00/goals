@@ -58,21 +58,28 @@ export default function Goals() {
             status: "Pending",
             edit: 1
         }
-
-        api.post("/goal/create", newGoal)
-            .then(() => {
+        api.post("/goal/create",
+            newGoal,
+            {
+                headers: {
+                    token: Cookies.get("token")
+                }
+            }).then(() => {
                 LoadGoals();
-            })
-            .catch((err) => {                
+            }).catch((err) => {
                 toast.error("failed to create new goal, reload page and try again");
             })
     }
 
     function LoadGoals() {
-        api.get("/user/goals").then((res) => {
+        api.get("/user/goals", {
+            headers: {
+                token: Cookies.get("token")
+            }
+        }).then((res) => {
             setGoals(res.data)
-        }).catch((err) => {
-            toast.error(err.message);
+        }).catch(({ response }) => {
+            toast.error(response.data);
         })
     }
 

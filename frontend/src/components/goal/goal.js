@@ -7,6 +7,7 @@ import { AiFillEdit, AiOutlineCheck } from "react-icons/ai"
 import { GiConfirmed } from "react-icons/gi"
 import { toast } from "react-toastify";
 import { MdDeleteForever } from "react-icons/md"
+import Cookies from "js-cookie";
 
 export default function Goal(props) {
 
@@ -44,7 +45,10 @@ export default function Goal(props) {
             date: date,
             value: value,
             current_value: current_value,
-            status: s
+            status: s,
+            headers:{
+                token: Cookies.get("token")
+            }
         })
 
         if (status == GoalStatuses.done) {
@@ -66,7 +70,10 @@ export default function Goal(props) {
                 value: value,
                 current_value: current_value,
                 achievement_time: date,
-                status: status
+                status: status,
+                headers:{
+                    token: Cookies.get("token")
+                }
 
             }).then((res) => {
                 toast.success("Goal Edited successfuly");
@@ -82,6 +89,9 @@ export default function Goal(props) {
         api.delete("/goal/delete", {
             data: {
                 id: id
+            },
+            headers:{
+                token: Cookies.get("token")
             }
         }).then((res) => {
             toast.success(res.data);

@@ -3,7 +3,7 @@ import { authUser, checkAuth } from "../auth.js";
 import cookieParser from "cookie-parser";
 export async function createGoalHandler(req, res) {
     let { title, description, value, current_value, due_date, edit, status } = req.body;
-    
+
     if(!edit || (edit != 0 && edit != 1)) edit = 0;
     
     const possibleStatuses = ["Pending", "Done", "Failed"];
@@ -11,6 +11,10 @@ export async function createGoalHandler(req, res) {
     if(!possibleStatuses.includes(status)) status = "Pending";
 
     const token = req.headers.token;
+    if(!token){
+        return res.status(400).send("not authorized");
+    }
+    
     const user_id = checkAuth(token).id;
 
     try{
@@ -33,7 +37,10 @@ export async function createGoalHandler(req, res) {
 
 export async function getUserGoalsHandler(req, res) {
 
-    const token = req.headers.token;    
+    const token = req.headers.token;  
+    if(!token){
+        return res.status(400).send("not authorized");
+    }
     const user_id = checkAuth(token).id;    
     
     let user_goals = await getGoalsService({ user_id });
